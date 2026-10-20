@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@(ViewData["Title"] ?? "Tin tức công nghệ") | TechNews</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet">
+    <link href="~/css/tech-navigation.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/newsroom.css" rel="stylesheet" asp-append-version="true">
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+</head>
+<body class="newsroom">
+    <a class="skip-content" href="#main-content">Đến nội dung chính</a>
+    <header class="news-masthead">
+        <div class="container masthead-inner">
+            <a class="news-brand" href="/" aria-label="TechNews — Trang chủ"><strong>tech<span>news</span><i>.</i></strong><small>NHỊP SỐNG CÔNG NGHỆ</small></a>
+            <span class="masthead-note">Hiểu công nghệ. Kết nối tương lai.</span>
+            <form class="news-search" action="/" method="get" role="search">
+                <label class="sr-only" for="news-query">Tìm bài viết</label>
+                <input id="news-query" type="search" name="q" value="@Context.Request.Query["q"]" placeholder="Tìm bài viết…">
+                <button type="submit" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></button>
+            </form>
+        </div>
+    </header>
+    @await Component.InvokeAsync("Categories")
+    <main id="main-content" tabindex="-1">@RenderBody()</main>
+    <footer class="news-footer"><div class="container"><a class="news-brand" href="/"><strong>tech<span>news</span><i>.</i></strong></a><p>Góc nhìn, kiến thức và những chuyển động trong thế giới công nghệ.</p><div class="footer-bottom"><small>© @DateTime.Now.Year TechNews</small><a href="/Admin/Login">Dành cho biên tập viên ↗</a></div></div></footer>
+    <script>
+        const strip = document.querySelector('.topic-tabs');
+        const selected = document.querySelector('.topic-tab.is-active');
+        if (strip && selected) strip.scrollLeft = Math.max(0, selected.offsetLeft - strip.offsetLeft - 12);
+    </script>
+</body>
+</html>

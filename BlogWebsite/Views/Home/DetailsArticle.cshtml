@@ -1,0 +1,39 @@
+@model BlogWebsite.Models.Article
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = Model.ArticleTitle;
+    bool summary = Model.Source == "Znews (bản tóm tắt)";
+    bool liked = ViewBag.IsLiked == true;
+}
+<div class="container news-page">
+    <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Công nghệ</a><span>/</span><a href="@Url.Action("GetArticlesByCategory", "Home", new { slug = Model.Category.CategoryName.Replace(" ", "-"), id = Model.CategoryId })">@Model.Category.CategoryName</a></nav>
+    <div class="article-columns">
+        <article class="news-article">
+            <header><span class="article-kicker">@(summary ? "ĐIỂM TIN / ZNEWS" : Model.Category.CategoryName)</span><h1>@Model.ArticleTitle</h1><div class="article-byline"><span>@(summary ? "TechNews tổng hợp" : Model.Author?.UserName)</span><time datetime="@Model.ArticleDate.ToString("yyyy-MM-dd")">@Model.ArticleDate.ToString("dd/MM/yyyy")</time></div><p class="article-standfirst">@Model.ArticleDescription</p></header>
+            @if (!string.IsNullOrWhiteSpace(Model.ArticleThumb))
+            {
+                <figure class="article-cover"><img src="@Model.ArticleThumb" alt="@Model.ArticleTitle"> @if (summary) { <figcaption>Hình minh họa của TechNews, không phải ảnh sự kiện.</figcaption> }</figure>
+            }
+            @if (summary) { <p class="article-summary-note">Bản tóm tắt do TechNews biên soạn từ Znews. Liên kết bài gốc ở cuối nội dung.</p> }
+            <div class="article-body">@Html.Raw(Model.ArticleContent)</div>
+            <footer class="article-actions"><button type="button" id="article-like" class="article-like @(liked ? "is-liked" : "")" aria-pressed="@(liked ? "true" : "false")">Hữu ích <span>@(Model.LikeCounts ?? 0)</span></button><span>@(string.IsNullOrWhiteSpace(Model.Source) ? "TechNews" : Model.Source)</span><span id="like-message" role="status"></span></footer>
+        </article>
+        <aside class="news-rail">@await Component.InvokeAsync("MostPopular")</aside>
+    </div>
+</div>
+<script>
+    document.getElementById('article-like').addEventListener('click', async function () {
+        this.disabled = true;
+        try {
+            const response = await fetch('/Like/@Model.Id', { method: 'POST' });
+            if (!response.ok) throw new Error();
+            const wasLiked = this.getAttribute('aria-pressed') === 'true';
+            const counter = this.querySelector('span');
+            counter.textContent = Math.max(0, Number(counter.textContent) + (wasLiked ? -1 : 1));
+            this.classList.toggle('is-liked', !wasLiked);
+            this.setAttribute('aria-pressed', String(!wasLiked));
+            document.getElementById('like-message').textContent = '';
+        } catch (_) { document.getElementById('like-message').textContent = 'Chưa thể lưu. Bạn thử lại nhé.'; }
+        finally { this.disabled = false; }
+    });
+</script>

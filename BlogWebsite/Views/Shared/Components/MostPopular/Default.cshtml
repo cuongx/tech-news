@@ -1,0 +1,10 @@
+@model IEnumerable<Article>
+<section class="news-popular" aria-label="Bài viết được đọc nhiều">
+    <h2 class="news-section-title">Đọc nhiều</h2>
+    <ol>
+        @foreach (var article in Model)
+        {
+            <li><a href="@Url.Action("DetailsArticle", "Home", new { slug = article.ArticleTitle.Replace(" ", "-"), id = article.Id })">@article.ArticleTitle</a><small>@article.ArticleDate.ToString("dd/MM/yyyy")</small></li>
+        }
+    </ol>
+</section>

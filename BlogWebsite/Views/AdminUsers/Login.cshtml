@@ -1,0 +1,49 @@
+@model User
+@{ Layout = null; }
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Đăng nhập quản trị | TechNews</title>
+    <link href="~/css/admin-studio.css" rel="stylesheet" asp-append-version="true" />
+</head>
+<body class="studio-login">
+    <main class="login-shell">
+        <section class="login-story" aria-label="TechNews Studio">
+            <a class="studio-brand" href="/"><span class="studio-mark">T↗</span><span>TechNews<small>EDITORIAL STUDIO</small></span></a>
+            <div class="login-story-copy"><span class="studio-kicker">KHÔNG GIAN BIÊN TẬP</span><h1>Nơi câu chuyện<br />công nghệ<br />bắt đầu<span>.</span></h1><p>Từ ý tưởng đến bài viết. Quản lý nội dung và mang những góc nhìn mới đến độc giả.</p></div>
+            <div class="login-story-bottom"><span>01 / Viết & biên tập</span><span>02 / Chia sẻ góc nhìn</span></div>
+        </section>
+        <section class="login-form-panel">
+            <a class="login-back" href="/">← Về trang tin tức</a>
+            <div class="login-form-inner">
+                <span class="login-label">TECHNEWS ADMIN</span><h2>Chào mừng trở lại</h2><p class="login-subtitle">Đăng nhập để tiếp tục công việc biên tập.</p>
+                <form action="/Admin/Login" method="post" class="login-form">
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="login-error" role="alert" asp-validation-summary="All"></div>
+                    }
+                    <label for="name">Tên đăng nhập</label>
+                    <input id="name" name="name" type="text" value="@ViewData["LoginName"]" autocomplete="username" placeholder="Nhập tên đăng nhập" required autofocus />
+                    <label for="password">Mật khẩu</label>
+                    <div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="Nhập mật khẩu" required /><button type="button" id="password-toggle" aria-controls="password" aria-pressed="false" aria-label="Hiện mật khẩu">Hiện</button></div>
+                    <button class="login-submit" type="submit">Đăng nhập <span aria-hidden="true">→</span></button>
+                    <p class="login-help">Sử dụng tài khoản được quản trị viên cấp.<br />Nếu quên mật khẩu, vui lòng liên hệ quản trị viên.</p>
+                </form>
+            </div>
+            <footer class="login-footer">© @DateTime.Now.Year TechNews · Không gian dành cho đội ngũ biên tập</footer>
+        </section>
+    </main>
+    <script>
+        document.getElementById('password-toggle').addEventListener('click', function () {
+            const input = document.getElementById('password');
+            const visible = input.type === 'password';
+            input.type = visible ? 'text' : 'password';
+            this.textContent = visible ? 'Ẩn' : 'Hiện';
+            this.setAttribute('aria-pressed', String(visible));
+            this.setAttribute('aria-label', visible ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+        });
+    </script>
+</body>
+</html>

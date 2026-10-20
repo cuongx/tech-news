@@ -1,0 +1,15 @@
+@model BlogWebsite.Models.Article
+<article class="news-card">
+    <a class="news-image" href="@Url.Action("DetailsArticle", "Home", new { slug = Model.ArticleTitle.Replace(" ", "-"), id = Model.Id })" tabindex="-1" aria-hidden="true">
+        @if (!string.IsNullOrWhiteSpace(Model.ArticleThumb))
+        {
+            <img src="@Model.ArticleThumb" alt="" loading="lazy">
+        }
+        else { <span class="news-placeholder">TECHNEWS</span> }
+    </a>
+    <div class="news-copy">
+        <div class="news-meta"><span>@Model.Category?.CategoryName</span><time datetime="@Model.ArticleDate.ToString("yyyy-MM-dd")">@Model.ArticleDate.ToString("dd/MM/yyyy")</time></div>
+        <h2><a href="@Url.Action("DetailsArticle", "Home", new { slug = Model.ArticleTitle.Replace(" ", "-"), id = Model.Id })">@Model.ArticleTitle</a></h2>
+        <p>@Model.ArticleDescription</p>
+    </div>
+</article>

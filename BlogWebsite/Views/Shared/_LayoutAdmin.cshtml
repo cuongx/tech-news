@@ -1,0 +1,185 @@
+@using System.Security.Claims;
+@{
+    var section = ViewContext.RouteData.Values["controller"]?.ToString();
+    var action = ViewContext.RouteData.Values["action"]?.ToString();
+    bool featured = Context.Request.Path.StartsWithSegments("/Admin/BreakingNews");
+    var sectionTitle = section == "AdminCategories" ? "Chuyên mục" : section == "AdminUsers" ? "Tài khoản & người viết" : featured ? "Tin nổi bật" : "Bài viết";
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@sectionTitle | TechNews Studio</title>
+    <link href="~/vendor/fontawesome-free/css/all.min.css" rel="stylesheet">
+    <link href="~/css/sbb-admin-2.min.css" rel="stylesheet">
+    <link href="~/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+    <script src="~/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote-bs4.min.js"></script>
+    <link href="~/css/toast.css" rel="stylesheet">
+    <script src="~/js/toast.js"></script>
+    <link href="~/css/admin-studio.css" rel="stylesheet" asp-append-version="true">
+</head>
+<body id="page-top" class="studio-admin">
+    <div id="wrapper">
+        <ul class="navbar-nav sidebar sidebar-dark accordion" id="accordionSidebar" aria-label="Menu quản trị">
+            <li><a class="sidebar-brand d-flex align-items-center" href="/Admin/Articles"><span class="studio-brand"><span class="studio-mark">T↗</span><span>TechNews<small>EDITORIAL STUDIO</small></span></span></a></li>
+            <li class="sidebar-heading">KHÔNG GIAN LÀM VIỆC</li>
+            <li class="nav-item @(section == "AdminArticles" && !featured ? "active" : "")"><a class="nav-link" href="/Admin/Articles"><i class="far fa-file-alt" aria-hidden="true"></i><span>Bài viết</span></a></li>
+            @if (User.IsInRole("Admin"))
+            {
+                <li class="nav-item @(featured ? "active" : "")"><a class="nav-link" href="/Admin/BreakingNews"><i class="far fa-star" aria-hidden="true"></i><span>Tin nổi bật</span></a></li>
+                <li class="nav-item @(section == "AdminCategories" ? "active" : "")"><a class="nav-link" href="/Admin/Categories"><i class="fas fa-layer-group" aria-hidden="true"></i><span>Chuyên mục</span></a></li>
+                <li class="nav-item @(section == "AdminUsers" && action != "Details" ? "active" : "")"><a class="nav-link" href="/Admin/Users"><i class="fas fa-users" aria-hidden="true"></i><span>Người viết</span></a></li>
+            }
+            <li class="sidebar-heading">TÀI KHOẢN</li>
+            <li class="nav-item @(section == "AdminUsers" && action == "Details" ? "active" : "")"><a class="nav-link" href="/Admin/Profile/@User.FindFirst(ClaimTypes.NameIdentifier)?.Value"><i class="far fa-user" aria-hidden="true"></i><span>Thông tin cá nhân</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="/"><i class="fas fa-external-link-alt" aria-hidden="true"></i><span>Xem website</span></a></li>
+            <li class="nav-item"><a class="nav-link" href="#logoutModal" data-toggle="modal" data-target="#logoutModal"><i class="fas fa-sign-out-alt" aria-hidden="true"></i><span>Đăng xuất</span></a></li>
+            <li class="text-center d-none d-md-block mt-4"><button type="button" class="rounded-circle border-0" id="sidebarToggle" aria-label="Thu gọn hoặc mở menu"></button></li>
+        </ul>
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4">
+                    <button type="button" id="sidebarToggleTop" class="btn btn-link d-md-none mr-2" aria-label="Ẩn hoặc hiện menu"><i class="fa fa-bars" aria-hidden="true"></i></button>
+                    <div class="studio-topbar-title">@sectionTitle<small>Quản trị nội dung / TechNews Studio</small></div>
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="mr-3 d-none d-sm-inline small">@User.Identity.Name</span><span class="studio-avatar"><i class="far fa-user" aria-hidden="true"></i></span>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-right shadow" aria-labelledby="userDropdown">
+                                <a class="dropdown-item" href="/Admin/Profile/@User.FindFirst(ClaimTypes.NameIdentifier)?.Value">Thông tin cá nhân</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="#logoutModal" data-toggle="modal" data-target="#logoutModal">Đăng xuất</a>
+                            </div>
+                        </li>
+                    </ul>
+                </nav>
+                @RenderBody()
+            </div>
+            <footer class="sticky-footer bg-white"><div class="copyright text-center">© @DateTime.Now.Year TechNews · Editorial Studio</div></footer>
+        </div>
+    </div>
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Đăng xuất</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Bạn có chắc chắn muốn đăng xuất?</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                    <a class="btn btn-primary" href="/Admin/Logout">Đăng xuất</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Modal-->
+    <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Xác nhận</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">Bạn có muốn xoá?</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                    <a class="btn btn-primary">Xác nhận</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Insert Image Modal -->
+    <div class="modal fade" id="insertImageModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Chọn ảnh</h4>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="image-file" class="control-label">Tải ảnh từ máy</label>
+                        <input id="image-file" class="note-image-input form-control-file note-form-control note-input" type="file" accept="image/*" onchange="UpLoadImageThumb()">
+                    </div>
+                    <div class="form-group">
+                        <label for="image-url" class="control-label">Đường dẫn ảnh</label>
+                        <input id="image-url" class="form-control" type="text">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <input onclick="UpLoadImageLinkThumb()" type="button" href="#" class="btn btn-primary" value="Chèn ảnh" disabled="">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Priority Modal-->
+    <div class="modal fade" id="changePriorityModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Thay đổi</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <form action="/Admin/ChangePriority" method="post">
+                    <div class="modal-body">Thay đổi độ ưu tiên bài viết</div>
+                    <div class="form-group">
+                        <input id="id" name="id" class="form-control w-25 ml-5" />
+                    </div>
+                    <div class="form-group">
+                        <select id="priority" name="priority" class="form-control w-25 ml-5">
+                            <option hidden value="0"></option>
+                            <option selected value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                        </select>
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">Hủy</button>
+                        <input type="submit" class="btn btn-primary" value="Lưu thay đổi" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    @if (TempData["Message"] != null)
+    {
+        <script>
+            $.toast({
+                title: 'Thành công',
+                content: '@TempData["Message"].ToString()',
+                type: 'success',
+                delay: 3000,
+                dismissible: true
+            });
+        </script>
+    }
+
+    <!-- Custom scripts for all pages-->
+    <script src="~/js/sb-admin-2.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

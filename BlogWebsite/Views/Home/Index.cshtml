@@ -1,0 +1,52 @@
+@model BlogWebsite.Models.NewsHomeViewModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    bool searching = !string.IsNullOrWhiteSpace(Model.Query);
+    ViewData["Title"] = searching ? "Tìm kiếm: " + Model.Query : "Công nghệ";
+}
+<div class="container news-page">
+    <header class="news-page-heading"><h1>@(searching ? "Tìm kiếm" : "Công nghệ")</h1><span>@(searching ? "Kết quả cho “" + Model.Query + "”" : "Tin tức · Thiết bị · Cuộc sống số")</span></header>
+    @if (!searching && Model.Articles.PageNumber == 1 && Model.Headlines.Count > 0)
+    {
+        <section class="news-front" aria-label="Tiêu điểm công nghệ">
+            <div class="front-main">@await Html.PartialAsync("_NewsCard", Model.Headlines[0])</div>
+            <div class="front-left">
+                @foreach (var article in Model.Headlines.Skip(3).Take(4)) { @await Html.PartialAsync("_NewsCard", article) }
+            </div>
+            <div class="front-right">
+                @foreach (var article in Model.Headlines.Skip(1).Take(2)) { @await Html.PartialAsync("_NewsCard", article) }
+            </div>
+        </section>
+    }
+    <div class="news-feed-columns">
+        <section class="news-feed">
+            <h2 class="news-section-title">@(searching ? "Bài viết tìm thấy" : "Tin mới")<small>@Model.Articles.TotalItemCount bài viết</small></h2>
+            @if (Model.Articles.Count == 0)
+            {
+                <div class="news-empty"><h3>@(searching ? "Chưa có kết quả phù hợp" : "Bạn đã xem các tin mới nhất")</h3><p>@(searching ? "Thử từ khóa khác hoặc chọn một chuyên mục ở menu." : "Khám phá thêm những câu chuyện theo chủ đề bên dưới.")</p><a href="/">Về trang chủ →</a></div>
+            }
+            <div class="news-list">
+                @foreach (var article in Model.Articles) { @await Html.PartialAsync("_NewsCard", article) }
+            </div>
+            @await Html.PartialAsync("PaginationPartial", Model.Articles)
+        </section>
+        <aside class="news-rail">
+            @await Component.InvokeAsync("MostPopular")
+            <div class="rail-note"><span>TECHNEWS / GÓC NHÌN</span><h3>Hiểu hơn.<br />Dùng tốt hơn.</h3><p>Từ thiết bị trong tay đến những thay đổi của thế giới số.</p><a href="#main-content">Khám phá công nghệ ↑</a></div>
+        </aside>
+    </div>
+    @if (!searching && Model.Articles.PageNumber == 1)
+    {
+        <div class="news-topics">
+            @foreach (var topic in Model.Sections)
+            {
+                <section class="news-topic">
+                    <h2 class="news-section-title"><a href="@Url.Action("GetArticlesByCategory", "Home", new { slug = topic.Category.CategoryName.Replace(" ", "-"), id = topic.Category.Id })">@topic.Category.CategoryName <span aria-hidden="true">›</span></a></h2>
+                    <div class="topic-stories">
+                        @foreach (var article in topic.Articles) { @await Html.PartialAsync("_NewsCard", article) }
+                    </div>
+                </section>
+            }
+        </div>
+    }
+</div>

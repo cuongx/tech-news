@@ -1,0 +1,19 @@
+@model BlogWebsite.Models.Article
+<article class="editorial-card">
+    <a class="editorial-image" href="@Url.Action("DetailsArticle", "Home", new { slug = Model.ArticleTitle.Replace(" ", "-"), id = Model.Id })" tabindex="-1" aria-hidden="true">
+        @if (!string.IsNullOrWhiteSpace(Model.ArticleThumb))
+        {
+            <img src="@Model.ArticleThumb" alt="" loading="lazy" />
+        }
+        else
+        {
+            <span class="image-placeholder">TechNews</span>
+        }
+    </a>
+    <div class="editorial-copy">
+        <div class="editorial-meta"><span>@Model.Category?.CategoryName</span><time datetime="@Model.ArticleDate.ToString("yyyy-MM-dd")">@Model.ArticleDate.ToString("dd.MM.yyyy")</time></div>
+        <h2><a href="@Url.Action("DetailsArticle", "Home", new { slug = Model.ArticleTitle.Replace(" ", "-"), id = Model.Id })">@Model.ArticleTitle</a></h2>
+        <p>@Model.ArticleDescription</p>
+        <span class="editorial-read" aria-hidden="true">Đọc bài viết ↗</span>
+    </div>
+</article>

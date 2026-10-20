@@ -1,0 +1,72 @@
+﻿@model PagedList.IPagedList<BlogWebsite.Models.Article>
+@using Microsoft.AspNetCore.Routing
+@{
+    var action = ViewContext.RouteData.Values["action"]?.ToString() ?? "Index";
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString() ?? "Home";
+    System.Func<int, string> pageUrl = page =>
+    {
+        var values = new RouteValueDictionary(ViewContext.RouteData.Values);
+        values["page"] = page;
+        values["q"] = Context.Request.Query["q"].ToString();
+        return Url.Action(action, controller, values);
+    };
+    var pages = new System.Collections.Generic.SortedSet<int>();
+    if (Model.PageCount <= 7)
+    {
+        for (var page = 1; page <= Model.PageCount; page++) { pages.Add(page); }
+    }
+    else
+    {
+        pages.Add(1);
+        pages.Add(Model.PageCount);
+        var first = System.Math.Max(2, System.Math.Min(Model.PageNumber - 1, Model.PageCount - 3));
+        for (var page = first; page <= System.Math.Min(first + 2, Model.PageCount - 1); page++) { pages.Add(page); }
+    }
+}
+@if (Model.PageCount > 1)
+{
+    <nav class="tech-pagination" aria-label="Phân trang bài viết">
+        <p class="tech-page-summary">Trang <strong>@Model.PageNumber</strong> / @Model.PageCount <span>· @Model.TotalItemCount bài viết</span></p>
+        <ul class="tech-page-list">
+            <li>
+                @if (Model.HasPreviousPage)
+                {
+                    <a class="tech-page-button tech-page-direction" href="@pageUrl(Model.PageNumber - 1)" rel="prev" aria-label="Trang trước">‹ <span>Trước</span></a>
+                }
+                else
+                {
+                    <span class="tech-page-button tech-page-direction is-disabled" aria-disabled="true">‹ <span>Trước</span></span>
+                }
+            </li>
+            @{ var previous = 0; }
+            @foreach (var page in pages)
+            {
+                if (previous > 0 && page - previous > 1)
+                {
+                    <li><span class="tech-page-gap" aria-hidden="true">…</span></li>
+                }
+                <li>
+                    @if (page == Model.PageNumber)
+                    {
+                        <span class="tech-page-button is-current" aria-current="page" aria-label="Trang @(page), trang hiện tại">@(page)</span>
+                    }
+                    else
+                    {
+                        <a class="tech-page-button" href="@pageUrl(page)" aria-label="Đến trang @(page)">@(page)</a>
+                    }
+                </li>
+                previous = page;
+            }
+            <li>
+                @if (Model.HasNextPage)
+                {
+                    <a class="tech-page-button tech-page-direction" href="@pageUrl(Model.PageNumber + 1)" rel="next" aria-label="Trang sau"><span>Sau</span> ›</a>
+                }
+                else
+                {
+                    <span class="tech-page-button tech-page-direction is-disabled" aria-disabled="true"><span>Sau</span> ›</span>
+                }
+            </li>
+        </ul>
+    </nav>
+}

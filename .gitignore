@@ -55,3 +55,33 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+
+# Visual Studio and local-only settings
+.vs/
+.idea/
+.vscode/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+appsettings.Local.json
+appsettings.*.local.json
+.env.*
+!.env.example
+*.local.sql
+*.pfx
+*.p12
+*.key
+*.pem
+
+# Database files, backups, generated previews
+*.mdf
+*.ldf
+*.bak
+*.bacpac
+*.dacpac
+*-backup-*/
+*-preview/
+node_modules/
+TestResults/
+*.log
