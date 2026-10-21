@@ -1,17 +1,12 @@
-﻿@model IEnumerable<Category>
+@model IEnumerable<Category>
 @using System.Linq
 @{
     var categories = Model.Where(c => c.ShowOnMenu).OrderBy(c => c.DisplayOrder).ThenBy(c => c.Id);
     var activeId = ViewBag.ActiveCategoryId == null ? 0 : (int)ViewBag.ActiveCategoryId;
-    var action = ViewContext.RouteData.Values["action"]?.ToString();
-    var isHome = action == "Index";
 }
 <nav class="topic-nav" aria-label="Chuyên mục công nghệ">
     <div class="container">
         <div class="topic-tabs">
-            <a class="topic-tab @(isHome ? "is-active" : "")" href="/" aria-current="@(isHome ? "page" : null)">
-                <span class="topic-symbol" aria-hidden="true">⌂</span> Trang chủ
-            </a>
             @foreach (var category in categories)
             {
                 var selected = activeId == category.Id;

@@ -2,16 +2,17 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = ViewBag.CategoryName;
+    ViewData["HomeEditorial"] = true;
+    ViewData["PublicPage"] = "newsroom-category";
     int categoryId = ViewBag.ActiveCategoryId;
-    string theme = categoryId == 8 ? "ai" : categoryId == 9 ? "phones" : categoryId == 10 ? "computers" : categoryId == 11 ? "security" : "software";
-    int leadCount = Model.PageNumber == 1 ? Math.Min(3, Model.Count) : 0;
+    int leadCount = Model.PageNumber == 1 ? Math.Min(1, Model.Count) : 0;
 }
-<div class="container news-page category-@theme">
-    <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Công nghệ</a><span>/</span><span aria-current="page">@ViewBag.CategoryName</span></nav>
+<div class="container news-page category-page">
+    <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><span class="category-label" aria-current="page">@ViewBag.CategoryName</span></nav>
     <header class="news-page-heading"><h1>@ViewBag.CategoryName</h1><span>@ViewBag.CategoryDescription</span></header>
     @if (leadCount > 0)
     {
-        <section class="category-leads" aria-label="Bài viết mới trong chuyên mục">
+        <section class="category-leads category-feature" aria-label="Bài viết mới trong chuyên mục">
             @foreach (var article in Model.Take(leadCount)) { @await Html.PartialAsync("_NewsCard", article) }
         </section>
     }

@@ -2,17 +2,18 @@
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     ViewData["Title"] = Model.ArticleTitle;
+    ViewData["PublicPage"] = "newsroom-detail";
     bool summary = Model.Source == "Znews (bản tóm tắt)";
     bool liked = ViewBag.IsLiked == true;
 }
 <div class="container news-page">
-    <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Công nghệ</a><span>/</span><a href="@Url.Action("GetArticlesByCategory", "Home", new { slug = Model.Category.CategoryName.Replace(" ", "-"), id = Model.CategoryId })">@Model.Category.CategoryName</a></nav>
+    <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><a class="category-label" href="@Url.Action("GetArticlesByCategory", "Home", new { slug = Model.Category.CategoryName.Replace(" ", "-"), id = Model.CategoryId })">@Model.Category.CategoryName</a></nav>
     <div class="article-columns">
         <article class="news-article">
             <header><span class="article-kicker">@(summary ? "ĐIỂM TIN / ZNEWS" : Model.Category.CategoryName)</span><h1>@Model.ArticleTitle</h1><div class="article-byline"><span>@(summary ? "TechNews tổng hợp" : Model.Author?.UserName)</span><time datetime="@Model.ArticleDate.ToString("yyyy-MM-dd")">@Model.ArticleDate.ToString("dd/MM/yyyy")</time></div><p class="article-standfirst">@Model.ArticleDescription</p></header>
             @if (!string.IsNullOrWhiteSpace(Model.ArticleThumb))
             {
-                <figure class="article-cover"><img src="@Model.ArticleThumb" alt="@Model.ArticleTitle"> @if (summary) { <figcaption>Hình minh họa của TechNews, không phải ảnh sự kiện.</figcaption> }</figure>
+                <figure class="article-cover"><img src="@Model.ArticleThumb" alt="@Model.ArticleTitle" decoding="async" fetchpriority="high"> @if (summary) { <figcaption>Hình minh họa của TechNews, không phải ảnh sự kiện.</figcaption> }</figure>
             }
             @if (summary) { <p class="article-summary-note">Bản tóm tắt do TechNews biên soạn từ Znews. Liên kết bài gốc ở cuối nội dung.</p> }
             <div class="article-body">@Html.Raw(Model.ArticleContent)</div>

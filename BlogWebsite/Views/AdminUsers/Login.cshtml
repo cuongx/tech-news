@@ -10,15 +10,10 @@
 </head>
 <body class="studio-login">
     <main class="login-shell">
-        <section class="login-story" aria-label="TechNews Studio">
-            <a class="studio-brand" href="/"><span class="studio-mark">T↗</span><span>TechNews<small>EDITORIAL STUDIO</small></span></a>
-            <div class="login-story-copy"><span class="studio-kicker">KHÔNG GIAN BIÊN TẬP</span><h1>Nơi câu chuyện<br />công nghệ<br />bắt đầu<span>.</span></h1><p>Từ ý tưởng đến bài viết. Quản lý nội dung và mang những góc nhìn mới đến độc giả.</p></div>
-            <div class="login-story-bottom"><span>01 / Viết & biên tập</span><span>02 / Chia sẻ góc nhìn</span></div>
-        </section>
         <section class="login-form-panel">
             <a class="login-back" href="/">← Về trang tin tức</a>
             <div class="login-form-inner">
-                <span class="login-label">TECHNEWS ADMIN</span><h2>Chào mừng trở lại</h2><p class="login-subtitle">Đăng nhập để tiếp tục công việc biên tập.</p>
+                <a class="login-news-brand" href="/" aria-label="TechNews — Trang chủ">tech<span>news</span>.</a><h1>Đăng nhập</h1><p class="login-subtitle">Đăng nhập để tiếp tục công việc biên tập.</p>
                 <form action="/Admin/Login" method="post" class="login-form">
                     @if (!ViewData.ModelState.IsValid)
                     {

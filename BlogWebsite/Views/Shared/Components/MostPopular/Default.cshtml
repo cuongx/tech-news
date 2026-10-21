@@ -1,10 +1,43 @@
 @model IEnumerable<Article>
-<section class="news-popular" aria-label="Bài viết được đọc nhiều">
-    <h2 class="news-section-title">Đọc nhiều</h2>
-    <ol>
-        @foreach (var article in Model)
-        {
-            <li><a href="@Url.Action("DetailsArticle", "Home", new { slug = article.ArticleTitle.Replace(" ", "-"), id = article.Id })">@article.ArticleTitle</a><small>@article.ArticleDate.ToString("dd/MM/yyyy")</small></li>
-        }
-    </ol>
-</section>
+@{
+    var homeEditorial = ViewContext.RouteData.Values["controller"]?.ToString() == "Home";
+}
+@if (homeEditorial)
+{
+    <section class="home-popular" aria-labelledby="popular-heading">
+        <header class="home-section-heading"><h2 id="popular-heading">Bài viết nổi bật</h2></header>
+        <ol>
+            @foreach (var article in Model)
+            {
+                <li data-article-id="@article.Id">
+                    <a class="home-popular-image" tabindex="-1" aria-hidden="true" href="@Url.Action("DetailsArticle", "Home", new { slug = article.ArticleTitle.Replace(" ", "-"), id = article.Id })">
+                        @if (!string.IsNullOrWhiteSpace(article.ArticleThumb))
+                        {
+                            <img src="@article.ArticleThumb" alt="" loading="lazy" decoding="async">
+                        }
+                        else { <span class="news-placeholder">TN</span> }
+                    </a>
+                    <div class="home-popular-copy">
+                        <h3><a href="@Url.Action("DetailsArticle", "Home", new { slug = article.ArticleTitle.Replace(" ", "-"), id = article.Id })">@article.ArticleTitle</a></h3>
+                        @if (article.ViewCounts.HasValue)
+                        {
+                            <small>@article.ViewCounts.Value.ToString("N0") lượt xem</small>
+                        }
+                    </div>
+                </li>
+            }
+        </ol>
+    </section>
+}
+else
+{
+    <section class="news-popular" aria-label="Bài viết được đọc nhiều">
+        <h2 class="news-section-title">Đọc nhiều</h2>
+        <ol>
+            @foreach (var article in Model)
+            {
+                <li><a href="@Url.Action("DetailsArticle", "Home", new { slug = article.ArticleTitle.Replace(" ", "-"), id = article.Id })">@article.ArticleTitle</a><small>@article.ArticleDate.ToString("dd/MM/yyyy")</small></li>
+            }
+        </ol>
+    </section>
+}

@@ -1,52 +1,110 @@
 @model BlogWebsite.Models.NewsHomeViewModel
+@using System.Linq
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
     bool searching = !string.IsNullOrWhiteSpace(Model.Query);
     ViewData["Title"] = searching ? "Tìm kiếm: " + Model.Query : "Công nghệ";
+    ViewData["HomeEditorial"] = true;
+    ViewData["PublicPage"] = searching ? "newsroom-search" : "";
+    var firstPage = !searching && Model.Articles.PageNumber == 1;
+    var heroArticles = firstPage ? Model.Headlines.Take(3).ToList() : new System.Collections.Generic.List<Article>();
+    var displayedIds = new System.Collections.Generic.HashSet<int>(heroArticles.Select(a => a.Id).Concat(Model.Articles.Select(a => a.Id)));
+    // Presentation only: reuse the device articles already supplied by the home view model.
+    var deviceCategories = new[] { "Điện thoại", "Máy tính", "Mobile", "Gadget" };
+    var reviewArticles = firstPage
+        ? Model.Sections.Where(s => deviceCategories.Contains(s.Category.CategoryName, System.StringComparer.OrdinalIgnoreCase))
+            .SelectMany(s => s.Articles).Where(a => !displayedIds.Contains(a.Id))
+            .GroupBy(a => a.Id).Select(g => g.First()).Take(2).ToList()
+        : new System.Collections.Generic.List<Article>();
+    foreach (var article in reviewArticles) { displayedIds.Add(article.Id); }
+    var notableArticles = firstPage
+        ? Model.Headlines.Skip(3).Where(a => !displayedIds.Contains(a.Id)).Take(3).ToList()
+        : new System.Collections.Generic.List<Article>();
+    var hasReadingRail = reviewArticles.Count > 0 || notableArticles.Count > 0;
 }
-<div class="container news-page">
-    <header class="news-page-heading"><h1>@(searching ? "Tìm kiếm" : "Công nghệ")</h1><span>@(searching ? "Kết quả cho “" + Model.Query + "”" : "Tin tức · Thiết bị · Cuộc sống số")</span></header>
-    @if (!searching && Model.Articles.PageNumber == 1 && Model.Headlines.Count > 0)
+<div class="container news-page home-editorial">
+    @if (!searching) { <h1 class="sr-only">TechNews — Tin tức công nghệ</h1> }
+    @if (searching)
     {
-        <section class="news-front" aria-label="Tiêu điểm công nghệ">
-            <div class="front-main">@await Html.PartialAsync("_NewsCard", Model.Headlines[0])</div>
-            <div class="front-left">
-                @foreach (var article in Model.Headlines.Skip(3).Take(4)) { @await Html.PartialAsync("_NewsCard", article) }
-            </div>
-            <div class="front-right">
-                @foreach (var article in Model.Headlines.Skip(1).Take(2)) { @await Html.PartialAsync("_NewsCard", article) }
-            </div>
-        </section>
+        <header class="home-search-heading">
+            <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><span aria-current="page">Tìm kiếm</span></nav>
+            <h1>Kết quả tìm kiếm</h1>
+            <p class="search-keyword">Từ khóa: <strong>“@Model.Query”</strong></p>
+            <p>@Model.Articles.TotalItemCount bài viết phù hợp</p>
+        </header>
     }
-    <div class="news-feed-columns">
-        <section class="news-feed">
-            <h2 class="news-section-title">@(searching ? "Bài viết tìm thấy" : "Tin mới")<small>@Model.Articles.TotalItemCount bài viết</small></h2>
+    @if (firstPage && heroArticles.Count > 0)
+    {
+        <div class="home-top-grid">
+            <section class="home-hero @(heroArticles.Count == 1 ? "home-hero--single" : "")" aria-label="Tin nổi bật">
+                @{ ViewData["HomeHero"] = true; }
+                <div class="home-hero-lead">@await Html.PartialAsync("_NewsCard", heroArticles[0])</div>
+                @if (heroArticles.Count > 1)
+                {
+                    <div class="home-hero-support @(heroArticles.Count == 2 ? "home-hero-support--single" : "")">
+                        @foreach (var article in heroArticles.Skip(1))
+                        {
+                            @await Html.PartialAsync("_NewsCard", article)
+                        }
+                    </div>
+                }
+                @{ ViewData["HomeHero"] = false; }
+            </section>
+            <aside class="home-popular-rail" aria-label="Bài viết nổi bật">
+                @await Component.InvokeAsync("MostPopular")
+            </aside>
+        </div>
+    }
+    <div class="home-lower-grid @(!hasReadingRail ? "home-lower-grid--wide" : "")">
+        <section class="home-latest" aria-labelledby="latest-heading">
+            <header class="home-section-heading">
+                <h2 id="latest-heading">@(searching ? "Bài viết tìm thấy" : "Tin mới nhất")</h2>
+                <span>@Model.Articles.TotalItemCount bài viết</span>
+            </header>
             @if (Model.Articles.Count == 0)
             {
-                <div class="news-empty"><h3>@(searching ? "Chưa có kết quả phù hợp" : "Bạn đã xem các tin mới nhất")</h3><p>@(searching ? "Thử từ khóa khác hoặc chọn một chuyên mục ở menu." : "Khám phá thêm những câu chuyện theo chủ đề bên dưới.")</p><a href="/">Về trang chủ →</a></div>
+                <div class="news-empty">
+                    <h3>@(searching ? "Chưa có kết quả phù hợp" : "Bạn đã xem các tin mới nhất")</h3>
+                    <p>@(searching ? "Thử từ khóa khác hoặc chọn một chuyên mục ở menu." : "Chọn một chuyên mục trên thanh điều hướng để đọc thêm các bài viết.")</p>
+                    <a href="/">Về trang chủ →</a>
+                </div>
             }
-            <div class="news-list">
-                @foreach (var article in Model.Articles) { @await Html.PartialAsync("_NewsCard", article) }
+            <div class="news-list home-latest-list">
+                @foreach (var article in Model.Articles)
+                {
+                    @await Html.PartialAsync("_NewsCard", article)
+                }
             </div>
             @await Html.PartialAsync("PaginationPartial", Model.Articles)
         </section>
-        <aside class="news-rail">
-            @await Component.InvokeAsync("MostPopular")
-            <div class="rail-note"><span>TECHNEWS / GÓC NHÌN</span><h3>Hiểu hơn.<br />Dùng tốt hơn.</h3><p>Từ thiết bị trong tay đến những thay đổi của thế giới số.</p><a href="#main-content">Khám phá công nghệ ↑</a></div>
-        </aside>
+        @if (hasReadingRail)
+        {
+            <aside class="home-reading-rail" aria-label="Thiết bị và tin đáng chú ý">
+                @if (reviewArticles.Count > 0)
+                {
+                    <section class="home-reviews" aria-labelledby="reviews-heading">
+                        <header class="home-section-heading"><h2 id="reviews-heading">Góc đánh giá</h2></header>
+                        <div class="home-review-grid">
+                            @foreach (var article in reviewArticles)
+                            {
+                                @await Html.PartialAsync("_NewsCard", article)
+                            }
+                        </div>
+                    </section>
+                }
+                @if (notableArticles.Count > 0)
+                {
+                    <section class="home-notable" aria-labelledby="notable-heading">
+                        <header class="home-section-heading"><h2 id="notable-heading">Tin đáng chú ý</h2></header>
+                        <div class="home-notable-grid">
+                            @foreach (var article in notableArticles)
+                            {
+                                @await Html.PartialAsync("_NewsCard", article)
+                            }
+                        </div>
+                    </section>
+                }
+            </aside>
+        }
     </div>
-    @if (!searching && Model.Articles.PageNumber == 1)
-    {
-        <div class="news-topics">
-            @foreach (var topic in Model.Sections)
-            {
-                <section class="news-topic">
-                    <h2 class="news-section-title"><a href="@Url.Action("GetArticlesByCategory", "Home", new { slug = topic.Category.CategoryName.Replace(" ", "-"), id = topic.Category.Id })">@topic.Category.CategoryName <span aria-hidden="true">›</span></a></h2>
-                    <div class="topic-stories">
-                        @foreach (var article in topic.Articles) { @await Html.PartialAsync("_NewsCard", article) }
-                    </div>
-                </section>
-            }
-        </div>
-    }
 </div>
