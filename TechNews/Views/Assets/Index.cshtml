@@ -1,0 +1,5 @@
+@model List<TechNews.Models.Asset>
+@using System.Security.Claims
+@{Layout="~/Views/Shared/_LayoutAdmin.cshtml";ViewData["Title"]="Thư viện ảnh";}
+<div class="container-fluid"><h1>Thư viện ảnh</h1><p>Ảnh JPEG, PNG, GIF, WebP; tối đa 5 MB. Chọn lại ảnh trong form soạn bài.</p><form method="post" enctype="multipart/form-data">@Html.AntiForgeryToken()<label>Chọn ảnh <input name="file" type="file" accept="image/jpeg,image/png,image/gif,image/webp" required/></label><button class="btn btn-primary">Tải ảnh lên</button></form>
+<div class="row">@foreach(var asset in Model){<div class="col-md-4 my-3"><div class="card p-3"><img src="@asset.Url" alt="@asset.FileName" style="width:100%;height:180px;object-fit:contain"/><p>@asset.FileName · @(asset.Size/1024) KB</p><input class="form-control" value="@asset.Url" readonly aria-label="Đường dẫn ảnh"/>@if(User.IsInRole("Admin")||User.FindFirstValue(ClaimTypes.NameIdentifier)==asset.OwnerId.ToString()){<form method="post" action="/Admin/Assets/@asset.Id/Delete">@Html.AntiForgeryToken()<button class="btn btn-danger mt-2">Xóa ảnh chưa sử dụng</button></form>}</div></div>}</div></div>

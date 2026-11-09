@@ -1,0 +1,5 @@
+@model List<TechNews.Models.Comment>
+@{Layout="~/Views/Shared/_LayoutAdmin.cshtml";ViewData["Title"]="Duyệt bình luận";}
+<div class="container-fluid"><h1>Duyệt bình luận</h1><form method="get"><label>Trạng thái <select name="status"><option value="">Tất cả</option><option>Pending</option><option>Approved</option><option>Rejected</option><option>Hidden</option></select></label><button class="btn btn-primary">Lọc</button></form>
+@foreach(var c in Model){<section class="card my-3 p-3"><h2 class="h5">@c.Article?.ArticleTitle</h2><p>@c.Body</p><small>@c.User?.UserName · @c.Status · @c.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</small><form method="post" action="/Admin/Comments/@c.Id">@Html.AntiForgeryToken()<button class="btn btn-primary" name="status" value="Approved">Duyệt</button><button class="btn btn-secondary" name="status" value="Hidden">Ẩn</button><button class="btn btn-danger" name="status" value="Rejected">Từ chối</button></form></section>}
+</div>

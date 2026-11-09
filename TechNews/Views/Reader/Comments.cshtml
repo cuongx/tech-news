@@ -1,0 +1,23 @@
+﻿@model List<TechNews.Models.Comment>
+@{Layout="~/Views/Shared/_Layout.cshtml";ViewData["Title"]="Bình luận của tôi";}
+<link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+<section class="container account-page">
+ <nav class="account-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><a href="/Account">Tài khoản</a><span>/</span><span>Bình luận</span></nav>
+ <header class="account-heading"><h1>Bình luận của tôi</h1><p>@Model.Count bình luận · Bình luận được hiển thị sau khi duyệt.</p></header>
+ <div class="account-grid"><partial name="_AccountSidebar" /><section class="account-panel account-list" aria-label="Danh sách bình luận">
+ @if(Model.Count==0){<div class="account-empty"><h2>Bạn chưa có bình luận nào</h2><p>Đọc bài viết và chia sẻ ý kiến của bạn.</p><a class="account-button" href="/">Đọc bài viết</a></div>}
+ @foreach(var comment in Model){
+  var status=comment.Status switch{"Pending"=>"Chờ duyệt","Approved"=>"Đã duyệt","Rejected"=>"Không được duyệt","Hidden"=>"Đã ẩn",_=>"Đang xử lý"};
+  <article class="account-list-item" data-comment-id="@comment.Id">
+   <div class="account-list-copy">
+    <div class="account-comment-meta"><span class="account-comment-status" data-status="@comment.Status">@status</span><time>@comment.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</time></div>
+    @if(comment.Article?.ArticleStatus==true){<h2><a asp-controller="Home" asp-action="DetailsArticle" asp-route-slug="@comment.Article.ArticleTitle.Replace(" ","-")" asp-route-id="@comment.ArticleId">@comment.Article.ArticleTitle</a></h2>}
+    else{<h2>Bài viết không còn công khai</h2>}
+    <p class="account-comment-body">@comment.Body</p>
+   </div>
+   <form action="/Account/Comments/@comment.Id/Delete" method="post" class="account-confirm" data-confirm="Xóa bình luận này? Bạn không thể khôi phục sau khi xóa.">@Html.AntiForgeryToken()<button class="account-button secondary">Xóa bình luận</button></form>
+  </article>
+ }
+ </section></div>
+</section>
+<script src="~/js/account-lists.js" asp-append-version="true" defer></script>

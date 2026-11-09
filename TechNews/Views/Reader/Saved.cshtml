@@ -1,0 +1,21 @@
+﻿@model List<TechNews.Models.SavedArticle>
+@{Layout="~/Views/Shared/_Layout.cshtml";ViewData["Title"]="Bài viết đã lưu";}
+<link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+<section class="container account-page">
+ <nav class="account-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><a href="/Account">Tài khoản</a><span>/</span><span>Bài đã lưu</span></nav>
+ <header class="account-heading"><h1>Bài viết đã lưu</h1><p>@Model.Count bài viết trong danh sách của bạn.</p></header>
+ <div class="account-grid"><partial name="_AccountSidebar" /><section class="account-panel account-list" aria-label="Danh sách bài đã lưu">
+ @if(Model.Count==0){<div class="account-empty"><h2>Bạn chưa lưu bài viết nào</h2><p>Khi đọc một bài viết, chọn lưu bài để tìm lại tại đây.</p><a class="account-button" href="/">Khám phá bài viết</a></div>}
+ @foreach(var item in Model){
+  <article class="account-list-item">
+   <div class="account-list-copy">
+    <small>Đã lưu @item.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</small>
+    @if(item.Article?.ArticleStatus==true){<h2><a asp-controller="Home" asp-action="DetailsArticle" asp-route-slug="@item.Article.ArticleTitle.Replace(" ","-")" asp-route-id="@item.ArticleId">@item.Article.ArticleTitle</a></h2><p class="account-excerpt">@item.Article.ArticleDescription</p>}
+    else{<h2>Bài viết không còn công khai</h2><p>Bạn có thể bỏ bài này khỏi danh sách đã lưu.</p>}
+   </div>
+   <form method="post" action="/Account/Save/@item.ArticleId" class="account-confirm" data-confirm="Bỏ bài viết này khỏi danh sách đã lưu?">@Html.AntiForgeryToken()<input name="saved" value="false" type="hidden" /><button class="account-button secondary">Bỏ lưu</button></form>
+  </article>
+ }
+ </section></div>
+</section>
+<script src="~/js/account-lists.js" asp-append-version="true" defer></script>

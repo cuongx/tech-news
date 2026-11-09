@@ -1,0 +1,21 @@
+@model ShopOrder
+@{ViewData["Title"]=$"Đơn hàng #{Model.Id}";}
+<section class="shop-shell container">
+ <a href="/Shop/Orders">← Đơn hàng của tôi</a>
+ @if(TempData["OrderPlaced"] is int placedId && placedId==Model.Id){
+  <div class="order-success" role="status"><strong>Đặt hàng thành công!</strong><p>Mã đơn #@Model.Id. Cửa hàng sẽ xác nhận và chuẩn bị giao hàng. Bạn thanh toán khi nhận hàng.</p></div>
+ }
+ <h1>Đơn hàng #@Model.Id</h1><partial name="_ShopOrder" model="Model" />
+ <partial name="_OrderHistory" model="Model" />
+ @if(OrderStates.CanMove(Model.Status,"Cancelled")){
+  <details class="order-cancel"><summary>Hủy đơn hàng</summary>
+   <p>Bạn có thể hủy đơn trước khi cửa hàng chuyển sang đang giao. Thao tác này không thể hoàn tác.</p>
+   <form method="post" action="/Shop/Orders/@Model.Id/Cancel" class="shop-form">
+    @Html.AntiForgeryToken()<input type="hidden" name="version" value="@Convert.ToBase64String(Model.Version)" />
+    <label>Lý do hủy<textarea name="reason" required maxlength="500" rows="3" placeholder="Ví dụ: Tôi muốn đổi sản phẩm"></textarea></label>
+    <button class="shop-button secondary">Xác nhận hủy đơn</button>
+   </form>
+  </details>
+ }
+ <a class="shop-button secondary" href="/Shop">Tiếp tục mua sắm</a>
+</section>

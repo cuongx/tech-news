@@ -1,0 +1,18 @@
+@model List<TechNews.Models.Product>
+<section class="home-products" aria-labelledby="home-products-heading">
+    <header class="home-section-heading">
+        <h2 id="home-products-heading">Sản phẩm công nghệ</h2>
+        <div class="home-product-controls" hidden>
+            <button type="button" data-product-step="-1" aria-label="Sản phẩm trước" aria-controls="home-product-track">←</button>
+            <button type="button" data-product-step="1" aria-label="Sản phẩm tiếp theo" aria-controls="home-product-track">→</button>
+        </div>
+    </header>
+    <div class="home-product-grid" id="home-product-track" tabindex="0" role="region" aria-label="Danh sách sản phẩm, cuộn ngang để xem thêm">
+        @foreach (var product in Model)
+        {
+            <partial name="_ProductCard" model="product" />
+        }
+    </div>
+</section>
+
+<script src="~/js/home-products.js" asp-append-version="true" defer></script>

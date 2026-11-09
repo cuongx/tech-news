@@ -1,0 +1,6 @@
+﻿@model IEnumerable<TechNews.Models.Article>
+@if(Model.Any()) {
+<section aria-label="Tin ưu tiên">
+@foreach(var article in Model) { <a asp-controller="Home" asp-action="DetailsArticle" asp-route-slug="@article.ArticleTitle.Replace(" ", "-")" asp-route-id="@article.Id">@article.ArticleTitle</a> }
+</section>
+}

@@ -1,0 +1,74 @@
+/* Small additions to the existing editorial homepage. */
+.newsroom-home .home-header-actions{display:flex;align-items:center;gap:4px;flex-shrink:0;border-left:1px solid var(--home-border);padding-left:8px}
+.newsroom-home .home-header-actions .home-account,.newsroom-home .home-cart{display:flex;align-items:center;justify-content:center;width:40px;min-width:40px;height:44px;min-height:44px;padding:0;border:0;color:#334155}
+.newsroom-home .home-header-actions a:hover{color:var(--news-blue)}
+.newsroom-home .home-header-actions a:focus-visible{outline:2px solid var(--news-blue);outline-offset:2px;border-radius:4px}
+.newsroom-home .home-products{margin-top:28px;padding-top:22px;border-top:1px solid var(--home-border)}
+.newsroom-home .home-products .home-section-heading h2{font-size:23px;position:relative;padding-left:15px}
+.newsroom-home .home-products .home-section-heading h2:before{content:"";position:absolute;left:0;top:3px;bottom:2px;width:4px;border-radius:2px;background:var(--news-blue)}
+.newsroom-home .home-product-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+.newsroom-home .home-product-card{min-width:0;border:1px solid var(--home-border);border-radius:6px;overflow:hidden;background:#fff}
+.newsroom-home .home-product-image{display:flex;align-items:center;justify-content:center;aspect-ratio:6/5;background:#f7f8fa;overflow:hidden}
+.newsroom-home .home-product-image img{display:block;width:100%;height:100%;object-fit:contain;padding:16px}
+.newsroom-home .home-product-info{padding:14px}
+.newsroom-home .home-product-category{font-size:11px;color:var(--home-muted)}
+.newsroom-home .home-product-info h3{font-size:16px;line-height:1.4;font-weight:650;margin:6px 0 10px;overflow-wrap:anywhere}
+.newsroom-home .home-product-price{margin:0;font-size:17px;font-weight:700;color:var(--news-blue)}
+.newsroom-home .home-product-coming,.newsroom-home .home-product-stock{font-size:12px;color:var(--home-muted);margin:0}
+@media(max-width:1199px) and (min-width:768px){.newsroom-home .home-product-grid{gap:10px}.newsroom-home .home-product-info{padding:10px}.newsroom-home .home-product-info h3{font-size:14px}}
+@media(max-width:767px){.newsroom-home .masthead-inner{grid-template-columns:minmax(0,1fr) 84px}.newsroom-home .home-header-actions{grid-column:2;grid-row:1;padding:0;border:0}.newsroom-home .home-product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.newsroom-home .home-products{margin-top:24px;padding-top:20px}.newsroom-home .home-products .home-section-heading h2{font-size:22px}.newsroom-home .home-product-info{padding:12px}.newsroom-home .home-product-info h3{font-size:15px}}
+
+/* Buying guides follow the existing reading-rail content. */
+.newsroom-home .home-reading-rail--with-buying{display:flex;flex-direction:column}
+.newsroom-home .home-buying-guide{margin-top:0;padding-top:28px;min-width:0}
+.newsroom-home .home-buying-panel{padding:22px;background:#f7f8fa;border:1px solid var(--home-border);border-radius:6px}
+.newsroom-home .home-buying-panel .home-section-heading{margin-bottom:10px}
+.newsroom-home .home-buying-panel .home-section-heading h2{font-size:23px}
+.newsroom-home .home-buying-intro{margin:0 0 6px;color:var(--home-muted);font-size:13px;line-height:1.6}
+.newsroom-home .home-buying-item{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:start;gap:14px;padding:16px 0;border-bottom:1px solid var(--home-border)}
+.newsroom-home .home-buying-image{display:flex;align-items:center;justify-content:center;aspect-ratio:4/3;overflow:hidden;background:#e8edf3;border-radius:4px}
+.newsroom-home .home-buying-image img{width:100%;height:100%;object-fit:cover;display:block}
+.newsroom-home .home-buying-image>span{font-size:10px;font-weight:700;color:var(--home-muted)}
+.newsroom-home .home-buying-copy>span{display:block;font-size:10px;font-weight:600;text-transform:uppercase;color:var(--news-blue);margin-bottom:5px}
+.newsroom-home .home-buying-copy h3{font-size:15px;font-weight:650;line-height:1.45;margin:0;overflow-wrap:anywhere}
+.newsroom-home .home-buying-topics{display:flex;gap:10px;flex-wrap:wrap;padding-top:16px}
+.newsroom-home .home-buying-topics a{display:inline-flex;gap:10px;align-items:center;justify-content:space-between;padding:9px 12px;border:1px solid var(--home-border);border-radius:4px;background:white;font-size:12px;font-weight:600;min-height:40px}
+.newsroom-home .home-buying-topics a:hover{border-color:var(--news-blue);color:var(--news-blue)}
+@media(max-width:1199px){.newsroom-home .home-buying-panel{padding:16px}.newsroom-home .home-buying-item{grid-template-columns:76px minmax(0,1fr);gap:12px}.newsroom-home .home-buying-panel .home-section-heading h2{font-size:21px}}
+@media(max-width:767px){.newsroom-home .home-buying-guide{margin-top:0;padding-top:24px}.newsroom-home .home-buying-item{grid-template-columns:88px minmax(0,1fr)}}
+
+/* Full-width product row, outside the two news columns. */
+.newsroom-home .home-editorial>.home-products{width:100%;min-width:0;border-left:0;border-right:0}
+.newsroom-home .home-products .home-product-grid{display:flex;flex-wrap:nowrap;gap:16px;overflow-x:auto;padding:2px 2px 12px;scroll-snap-type:x proximity;scrollbar-width:thin;scrollbar-color:#b9c8dc transparent}
+.newsroom-home .home-products .home-product-card{flex:1 0 calc((100% - 32px)/3);min-width:240px;scroll-snap-align:start}
+.newsroom-home .home-products .home-product-image{height:200px;aspect-ratio:auto}
+.newsroom-home .home-product-controls:not([hidden]){display:flex;gap:8px;flex-shrink:0}
+.newsroom-home .home-product-controls button{width:40px;height:40px;border:1px solid var(--home-border);border-radius:4px;background:white;color:var(--news-blue);font-size:21px;cursor:pointer}
+.newsroom-home .home-product-controls button:disabled{opacity:.35;cursor:default}
+.newsroom-home .home-product-grid:focus-visible{outline:2px solid var(--news-blue);outline-offset:3px}
+@media(max-width:767px){.newsroom-home .home-products .home-product-card{flex:0 0 76%;min-width:220px}.newsroom-home .home-products .home-product-grid{gap:12px}.newsroom-home .home-products .home-product-image{height:180px}.newsroom-home .home-products>.home-section-heading{align-items:center}.newsroom-home .home-products .home-section-heading h2{font-size:20px}}
+/* Six equally sized products across the desktop content width. */
+@media(min-width:1200px){.newsroom-home .home-products .home-product-card{flex:1 0 calc((100% - 80px)/6);min-width:0}.newsroom-home .home-products .home-product-image{height:160px}.newsroom-home .home-product-info{padding:12px}.newsroom-home .home-product-info h3{font-size:15px;min-height:42px}}
+
+/* Shared product cards. */
+.newsroom-home .home-product-card.product-card-refined{display:flex;flex-direction:column;border:1px solid #e5eaf1;border-radius:12px;background:#fff;transition:border-color .18s,box-shadow .18s}
+.newsroom-home .product-card-refined:hover{border-color:#c0d3f1;box-shadow:0 8px 24px #163d7010}
+.newsroom-home .product-card-refined .home-product-image{position:relative;background:radial-gradient(ellipse at 50% 35%,#fff 0%,#f1f5fb 75%);border-bottom:1px solid #edf1f6}
+.newsroom-home .product-card-refined .home-product-image img{padding:22px;transition:transform .2s}
+.newsroom-home .product-card-refined:hover .home-product-image img{transform:scale(1.05)}
+.newsroom-home .product-card-refined .home-product-info{display:flex;flex-direction:column;flex:1;padding:16px}
+.newsroom-home .product-card-refined .home-product-category{font-size:10px;letter-spacing:.7px;text-transform:uppercase;color:#77869a}
+.newsroom-home .product-card-refined h3{font-size:15px;line-height:1.45;font-weight:700;min-height:44px;margin:8px 0}
+.newsroom-home .product-card-refined .home-product-price{font-size:21px;letter-spacing:-.6px;font-weight:800;color:#152840;white-space:nowrap;margin:0 0 8px}
+.newsroom-home .product-card-refined .home-product-price>span{font-size:15px;font-weight:600;color:#64748b}
+.newsroom-home .product-demo-badge{position:absolute;top:12px;left:12px;z-index:1;padding:4px 7px;background:white;border:1px solid #e5eaf1;border-radius:5px;font-size:9px;font-weight:600;color:#66788e}
+.newsroom-home .product-image-link{position:absolute;right:10px;bottom:10px;display:grid;place-items:center;width:26px;height:26px;background:white;border-radius:50%;font-size:17px;color:#71839b}
+.newsroom-home .product-availability{display:flex;align-items:center;gap:6px;font-size:11px;color:#46735f;margin:0 0 14px}
+.newsroom-home .product-availability:before{content:"";width:5px;height:5px;background:#398263;border-radius:50%;flex-shrink:0}
+.newsroom-home .product-availability.is-sold-out{color:#7c8796}.newsroom-home .product-availability.is-sold-out:before{background:#9aa5b3}
+.newsroom-home .product-add-form{margin-top:auto;padding-top:4px}
+.newsroom-home .product-add-button{display:flex;align-items:center;justify-content:center;gap:7px;width:100%;min-height:42px;padding:10px 8px;border:1px solid #0866ff;border-radius:7px;background:#0866ff;color:#fff;font:600 12px/1.4 "Be Vietnam Pro","Segoe UI",sans-serif;cursor:pointer;transition:background .18s}
+.newsroom-home .product-add-button:hover{background:#0756d5}.newsroom-home .product-add-button:disabled{background:#eef1f5;border-color:#e3e8f0;color:#8995a6;cursor:not-allowed}
+.newsroom-home .product-add-button svg{flex-shrink:0}
+@media(min-width:1200px){.newsroom-home .product-card-refined .home-product-info{padding:14px}.newsroom-home .home-products .product-card-refined .home-product-image{height:180px}}
+@media(prefers-reduced-motion:reduce){.newsroom-home .product-card-refined,.newsroom-home .product-card-refined .home-product-image img{transition:none}.newsroom-home .product-card-refined:hover .home-product-image img{transform:none}}

@@ -1,0 +1,12 @@
+@model ShopOrder
+<section class="order-history" aria-labelledby="history-heading">
+ <h2 id="history-heading">Lịch sử đơn hàng</h2>
+ <ol class="order-timeline">
+ @foreach(var entry in Model.History.OrderBy(x=>x.CreatedUtc).ThenBy(x=>x.Id)){
+  <li><strong>@OrderStates.Label(entry.Status)</strong><time datetime="@(DateTime.SpecifyKind(entry.CreatedUtc, DateTimeKind.Utc).ToString("O"))">@entry.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</time>
+   <span>@(entry.ActorRole=="Admin"?"Cửa hàng":entry.ActorRole=="Customer"?"Khách hàng":"Hệ thống")</span>
+   @if(!string.IsNullOrWhiteSpace(entry.Reason)){<p>@entry.Reason</p>}
+  </li>
+ }
+ </ol><small class="shop-muted">Thời gian hiển thị theo giờ Việt Nam.</small>
+</section>

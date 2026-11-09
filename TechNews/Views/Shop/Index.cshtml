@@ -1,0 +1,9 @@
+@model List<Product>
+@{ViewData["Title"]="Cửa hàng công nghệ";}
+<section class="shop-shell container">
+ <div class="shop-heading"><div><p class="shop-eyebrow">TECHNEWS / SHOP</p><h1>Công nghệ cho mỗi ngày.</h1><p>Khám phá sản phẩm, xem giá và đặt hàng ngay tại TechNews.</p></div><a class="shop-button secondary" href="/Shop/Cart">Giỏ hàng →</a></div>
+ <form method="get" action="/Shop" class="shop-filters"><label>Tìm sản phẩm<input name="q" value="@ViewBag.Q" placeholder="Tên sản phẩm…" /></label><label>Danh mục<select name="category"><option value="">Tất cả danh mục</option>@foreach(string c in ViewBag.Categories){<option value="@c" selected="@(c==(string)ViewBag.Category)">@c</option>}</select></label><button class="shop-button">Tìm kiếm</button></form>
+ @if(Model.Count==0){<div class="shop-empty"><h2>Chưa có sản phẩm phù hợp</h2><p>Thử từ khóa khác hoặc quay lại sau khi cửa hàng cập nhật sản phẩm.</p>@if(User.IsInRole("Admin")){<a href="/Admin/Products/Create" class="shop-button">Thêm sản phẩm và giá bán</a>}</div>}
+ <div class="shop-grid">@foreach(var p in Model){<partial name="_ProductCard" model="p" />}</div>
+ <nav class="shop-pagination" aria-label="Trang sản phẩm">@if(ViewBag.Page>1){<a href="@Url.Action("Index",new{q=ViewBag.Q,category=ViewBag.Category,page=ViewBag.Page-1})">← Trước</a>}<span>Trang @ViewBag.Page / @ViewBag.Pages</span>@if(ViewBag.Page<ViewBag.Pages){<a href="@Url.Action("Index",new{q=ViewBag.Q,category=ViewBag.Category,page=ViewBag.Page+1})">Sau →</a>}</nav>
+</section>

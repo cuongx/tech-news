@@ -1,0 +1,7 @@
+﻿@model CartViewModel
+@{ViewData["Title"]="Giỏ hàng";}
+<section class="container cart-page">
+    <nav class="cart-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><span>Giỏ hàng</span></nav>
+    <header class="cart-page-heading"><div><p>TECHNEWS / GIỎ HÀNG</p><h1>Sản phẩm bạn đã chọn</h1></div><a href="/Shop">Tiếp tục mua sắm →</a></header>
+    <div id="cart-content"><partial name="_CartContent" model="Model" /></div>
+</section>

@@ -1,0 +1,19 @@
+﻿@model IEnumerable<TechNews.Models.Article>
+@if (Model.Any())
+{
+    <section class="home-popular">
+        <header class="home-section-heading"><h2>Bài viết nổi bật</h2></header>
+        <ol>
+            @foreach (var article in Model)
+            {
+                <li>
+                    <a class="home-popular-image" asp-controller="Home" asp-action="DetailsArticle" asp-route-slug="@article.ArticleTitle.Replace(" ", "-")" asp-route-id="@article.Id"><img src="@article.ArticleThumb" alt="" loading="lazy" /></a>
+                    <div class="home-popular-copy">
+                        <h3><a asp-controller="Home" asp-action="DetailsArticle" asp-route-slug="@article.ArticleTitle.Replace(" ", "-")" asp-route-id="@article.Id">@article.ArticleTitle</a></h3>
+                        <small>@(article.ViewCounts ?? 0) lượt xem</small>
+                    </div>
+                </li>
+            }
+        </ol>
+    </section>
+}

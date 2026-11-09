@@ -85,3 +85,10 @@ appsettings.*.local.json
 node_modules/
 TestResults/
 *.log
+
+# Local uploads and verification screenshots
+.DS_Store
+TechNews/wwwroot/uploads/
+tests/*.png
+tests/*.jpg
+tests/*.pid

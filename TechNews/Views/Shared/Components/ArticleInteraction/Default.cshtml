@@ -1,0 +1,8 @@
+@model TechNews.Models.ArticleInteractionViewModel
+<section class="py-4" aria-label="Tương tác bài viết"><p>@foreach(var t in Model.Tags){<a class="btn btn-light mr-2" href="/Search?tagId=@t.Id">#@t.Name</a>}</p>
+@if(User.Identity.IsAuthenticated){<form method="post" action="/Account/Save/@Model.ArticleId">@Html.AntiForgeryToken()<input type="hidden" name="saved" value="@(!Model.Saved ? "true":"false")"/><button class="btn btn-outline-primary">@(Model.Saved?"Bỏ lưu bài":"Lưu bài")</button> <a href="/Account/Saved">Bài đã lưu</a></form>}
+<h2 class="h4 mt-4">Bình luận</h2>
+@if(User.Identity.IsAuthenticated){<form method="post" action="/Articles/@Model.ArticleId/Comments">@Html.AntiForgeryToken()<label for="comment-body">Nội dung bình luận</label><textarea id="comment-body" name="body" class="form-control" required maxlength="2000" rows="3"></textarea><p><small>Bình luận được hiển thị sau khi duyệt.</small></p><button class="btn btn-primary">Gửi bình luận</button> <a href="/Account/Comments">Bình luận của tôi</a></form>}else{<p><a href="/Admin/Login">Đăng nhập</a> hoặc <a href="/Account/Register">đăng ký</a> để lưu bài và bình luận.</p>}
+@foreach(var c in Model.Comments){<div class="border-bottom py-3"><strong>@c.User?.UserName</strong> <small>@c.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</small><p style="white-space:pre-wrap">@c.Body</p></div>}
+@if(Model.Related.Count>0){<h2 class="h4 mt-4">Bài viết liên quan</h2><ul>@foreach(var a in Model.Related){<li><a asp-controller="Home" asp-action="DetailsArticle" asp-route-slug="@a.ArticleTitle.Replace(" ","-")" asp-route-id="@a.Id">@a.ArticleTitle</a></li>}</ul>}
+</section>

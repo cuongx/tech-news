@@ -1,0 +1,16 @@
+/* Quy ước giao diện admin: màu xanh cho thao tác chính, khung đơn giản. */
+.studio-admin .shop-shell { color: var(--studio-ink); }
+.studio-admin .shop-shell h1 { font-size: 28px; letter-spacing: -.5px; }
+.studio-admin .shop-shell h2 { font-size: 18px; }
+.studio-admin .shop-button { background: var(--studio-blue); border-color: var(--studio-blue); border-radius: 6px; }
+.studio-admin .shop-button:hover { background: #0755d4; }
+.studio-admin .shop-button.secondary { background: #fff; color: #334155 !important; border-color: #cbd5e1; }
+.studio-admin .shop-button.secondary:hover { background: #f1f5f9; }
+.studio-admin .shop-filters { background: #f5f7fa; border-radius: 6px; }
+.studio-admin .admin-order-card { border-radius: 8px; box-shadow: none; }
+.studio-admin .admin-orders h1 i, .studio-admin .admin-orders h2 i { color: #64748b; }
+.studio-admin .admin-orders .order-id, .studio-admin .shop-price { color: var(--studio-blue) !important; }
+.studio-admin .shop-shell input:focus, .studio-admin .shop-shell select:focus, .studio-admin .shop-shell textarea:focus { outline-color: var(--studio-blue); }
+@media (max-width: 600px) {
+    .studio-admin .shop-shell h1 { font-size: 24px; }
+}

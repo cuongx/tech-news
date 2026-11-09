@@ -1,0 +1,7 @@
+@model List<TechNews.Models.Article>
+@{ Layout="~/Views/Shared/_LayoutAdmin.cshtml"; ViewData["Title"]="Quy trình biên tập"; }
+<div class="container-fluid"><h1>Quy trình biên tập</h1><p>Soạn bài, gửi duyệt và theo dõi tiến độ xuất bản.</p>
+<form method="get"><label>Trạng thái <select name="state"><option value="">Tất cả</option>@foreach(var s in new[]{"Draft","Pending","Approved","Rejected","Scheduled","Published","Unpublished"}){<option value="@s" selected="@(ViewBag.State==s)">@s</option>}</select></label><button class="btn btn-primary">Lọc</button></form>
+<div class="table-responsive"><table class="table"><thead><tr><th>Bài viết</th><th>Trạng thái</th><th>Lịch đăng (UTC+7)</th><th>Thao tác</th></tr></thead><tbody>
+@foreach(var a in Model){<tr><td>@a.ArticleTitle</td><td>@a.EditorialState</td><td>@a.ScheduledUtc?.AddHours(7).ToString("dd/MM/yyyy HH:mm")</td><td><a href="/Admin/Workflow/@a.Id">Xử lý / Lịch sử</a> · <a href="/Admin/EditArticle/@a.Id">Sửa bài</a></td></tr>}
+</tbody></table></div></div>

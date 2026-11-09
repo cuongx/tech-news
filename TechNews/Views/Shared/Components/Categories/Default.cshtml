@@ -1,0 +1,6 @@
+﻿@model IEnumerable<TechNews.Models.Category>
+<nav class="topic-nav" aria-label="Chuyên mục"><div class="topic-tabs">
+@foreach(var category in Model.Where(c => c.ShowOnMenu).OrderBy(c => c.DisplayOrder).ThenBy(c => c.Id)) {
+<a class="topic-tab @(ViewBag.ActiveCategoryId == category.Id ? "is-active" : "")" asp-controller="Home" asp-action="GetArticlesByCategory" asp-route-slug="@category.CategoryName.Replace(" ", "-")" asp-route-id="@category.Id">@category.CategoryName.ToUpperInvariant()</a>
+}
+</div></nav>

@@ -1,0 +1,103 @@
+using TechNews.Models;
+using TechNews.Services;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace TechNews
+{
+    public class Startup
+    {
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
+        public IConfiguration Configuration { get; }
+
+        // This method gets called by the runtime. Use this method to add services to the container.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddControllersWithViews(options => options.Filters.Add(new Microsoft.AspNetCore.Mvc.AutoValidateAntiforgeryTokenAttribute()));
+
+            services.AddDbContext<BLOGDBContext>(options =>
+                options.UseSqlServer(Configuration.GetConnectionString("BlogDatabase")));
+            services.AddScoped<ArticlesService>();
+            services.AddScoped<CategoriesService>();
+            services.AddScoped<UsersService>();
+            services.AddScoped<EditorialService>();
+            services.AddHttpContextAccessor();
+            services.AddScoped<ShoppingCartStore>();
+            services.AddScoped<OrderWorkflow>();
+            services.AddHostedService<PublicationWorker>();
+
+            services.AddSingleton<FileService>();
+
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            .AddCookie(options =>
+            {
+                options.Cookie.Name = "NewsWebsite";
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.LoginPath = "/Admin/Login";
+                options.AccessDeniedPath = "/Admin/Login";
+                options.Events.OnValidatePrincipal = async context => {
+                    var users = context.HttpContext.RequestServices.GetRequiredService<UsersService>();
+                    var id = context.Principal.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+                    var account = int.TryParse(id,out var userId) ? users.DetailsUser(userId) : null;
+                    if(account == null || !context.Principal.IsInRole(account.UserRole ?? "")) {
+                        context.RejectPrincipal();
+                        await Microsoft.AspNetCore.Authentication.AuthenticationHttpContextExtensions.SignOutAsync(context.HttpContext);
+                    }
+                };
+
+            });
+
+            services.AddDistributedMemoryCache();
+
+            services.AddSession();
+        }
+
+        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        {
+            if (env.IsDevelopment())
+            {
+                //app.UseDeveloperExceptionPage();
+
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            else
+            {
+                app.UseExceptionHandler("/Home/Error");
+                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseHsts();
+            }
+            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            app.UseSession();
+
+            app.UseRouting();
+
+            app.UseAuthentication();
+            app.UseAuthorization();
+
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllerRoute(
+                    name: "default",
+                    pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+        }
+    }
+}

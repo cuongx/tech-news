@@ -1,0 +1,37 @@
+@model PagedList.IPagedList<TechNews.Models.Article>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = ViewBag.CategoryName;
+    ViewData["HomeEditorial"] = true;
+    ViewData["PublicPage"] = "newsroom-category";
+    int categoryId = ViewBag.ActiveCategoryId;
+    int leadCount = Model.PageNumber == 1 ? Math.Min(1, Model.Count) : 0;
+}
+<div class="container news-page category-page">
+    <nav class="news-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><span class="category-label" aria-current="page">@ViewBag.CategoryName</span></nav>
+    <header class="news-page-heading"><h1>@ViewBag.CategoryName</h1><span>@ViewBag.CategoryDescription</span></header>
+    @if (leadCount > 0)
+    {
+        <section class="category-leads category-feature" aria-label="Bài viết mới trong chuyên mục">
+            @foreach (var article in Model.Take(leadCount)) { @await Html.PartialAsync("_NewsCard", article) }
+        </section>
+    }
+    <div class="news-feed-columns">
+        <section>
+            <h2 class="news-section-title">@(Model.PageNumber == 1 ? "Trong chuyên mục" : "Tiếp tục khám phá")<small>@Model.TotalItemCount bài viết</small></h2>
+            <div class="news-list">
+                @foreach (var article in Model.Skip(leadCount)) { @await Html.PartialAsync("_NewsCard", article) }
+            </div>
+            @if (Model.Count == 0)
+            {
+                <div class="news-empty"><h3>Chuyên mục đang được cập nhật</h3><p>Các bài viết mới sẽ được đăng tại đây.</p><a href="/">Khám phá tin công nghệ →</a></div>
+            }
+            else if (Model.Count == leadCount)
+            {
+                <p class="news-complete">Bạn đã xem các bài mới nhất trong chuyên mục. <a href="/">Xem thêm tin công nghệ →</a></p>
+            }
+            @await Html.PartialAsync("PaginationPartial", Model)
+        </section>
+        <aside class="news-rail">@await Component.InvokeAsync("MostPopular")</aside>
+    </div>
+</div>

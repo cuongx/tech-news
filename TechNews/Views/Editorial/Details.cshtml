@@ -1,0 +1,17 @@
+@model TechNews.Models.Article
+@{ Layout="~/Views/Shared/_LayoutAdmin.cshtml"; ViewData["Title"]="Duyệt bài"; var history=(List<TechNews.Models.EditorialEvent>)ViewBag.History; }
+<div class="container-fluid"><a href="/Admin/Workflow">← Danh sách</a><h1>@Model.ArticleTitle</h1><p>Trạng thái: <strong>@Model.EditorialState</strong></p>
+<div class="card p-3 mb-3">@Html.Raw(new Ganss.Xss.HtmlSanitizer().Sanitize(Model.ArticleContent??""))</div>
+<form method="post" action="/Admin/Workflow/@Model.Id">@Html.AntiForgeryToken()
+<label for="note">Phản hồi / lý do (bắt buộc khi từ chối)</label><textarea id="note" name="note" maxlength="1000" class="form-control"></textarea>
+<div class="my-3">
+@if(Model.EditorialState is "Draft" or "Rejected"){<button name="target" value="Pending" class="btn btn-primary">Gửi duyệt</button>}
+@if(Model.EditorialState=="Pending"){<button name="target" value="Draft" class="btn btn-secondary">Rút về nháp</button>}
+@if(User.IsInRole("Admin")){
+ if(Model.EditorialState=="Pending"){<button name="target" value="Approved" class="btn btn-primary">Duyệt bài</button><button name="target" value="Rejected" class="btn btn-danger">Từ chối</button>}
+ if(Model.EditorialState=="Approved"){<button name="target" value="Published" class="btn btn-primary">Xuất bản ngay</button><label>Lịch đăng (giờ Việt Nam) <input type="datetime-local" name="schedule" /></label><button name="target" value="Scheduled" class="btn btn-primary">Hẹn giờ</button>}
+ if(Model.EditorialState=="Scheduled"){<button name="target" value="CancelSchedule" class="btn btn-secondary">Hủy lịch đăng</button>}
+ if(Model.EditorialState=="Published"){<button name="target" value="Unpublished" class="btn btn-danger">Gỡ bài</button>}
+ if(Model.EditorialState=="Unpublished"){<button name="target" value="Draft" class="btn btn-secondary">Đưa về nháp</button>}
+}
+</div></form><h2>Lịch sử xử lý</h2><ul>@foreach(var e in history){<li>@e.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm") · @(e.ActorId.HasValue?"Tài khoản #"+e.ActorId:"Hệ thống"): @e.FromState → @e.ToState. @e.Note</li>}</ul></div>

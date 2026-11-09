@@ -1,0 +1,10 @@
+﻿@{
+ var name=User.Identity?.Name ?? "Tài khoản";
+ var initial=System.Globalization.StringInfo.GetNextTextElement(string.IsNullOrWhiteSpace(name)?"T":name.Trim()).ToUpperInvariant();
+ var links=new[]{(Url:"/Account",Title:"Thông tin cá nhân"),(Url:"/Shop/Orders",Title:"Đơn hàng của tôi"),(Url:"/Account/Saved",Title:"Bài viết đã lưu"),(Url:"/Account/Comments",Title:"Bình luận của tôi")};
+}
+<aside class="account-sidebar">
+ <div class="account-person"><span class="account-avatar" aria-hidden="true">@initial</span><div><h2>@name</h2><p>Tài khoản TechNews</p></div></div>
+ <nav class="account-menu" aria-label="Menu tài khoản">@foreach(var link in links){<a href="@link.Url" aria-current="@(Context.Request.Path==link.Url?"page":null)">@link.Title</a>}</nav>
+ <form method="post" action="/Admin/Logout" class="account-logout">@Html.AntiForgeryToken()<button>Đăng xuất</button></form>
+</aside>

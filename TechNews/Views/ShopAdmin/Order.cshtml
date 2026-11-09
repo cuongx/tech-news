@@ -1,0 +1,31 @@
+﻿@model ShopOrder
+@{ViewData["Title"]=$"Đơn hàng #{Model.Id}";var culture=System.Globalization.CultureInfo.GetCultureInfo("vi-VN");}
+<link href="~/css/admin-orders.css" rel="stylesheet" asp-append-version="true" />
+<section class="shop-shell container-fluid admin-orders">
+ <a href="@ViewBag.ReturnUrl" class="order-back">← Quay lại danh sách đơn hàng</a>
+ <header class="shop-heading"><div><h1>Đơn hàng #@Model.Id</h1><p>Đặt lúc @Model.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm") · Giờ Việt Nam</p></div><span class="shop-status" data-status="@Model.Status">@OrderStates.Label(Model.Status)</span></header>
+ @if(TempData["Message"]!=null){<div class="alert alert-info" role="status">@TempData["Message"]</div>}
+ <div class="admin-order-grid">
+  <section class="admin-order-card"><h2><i class="fas fa-map-marker-alt" aria-hidden="true"></i> Thông tin nhận hàng</h2><dl class="order-info"><dt>Người nhận</dt><dd>@Model.Recipient</dd><dt>Điện thoại</dt><dd>@Model.Phone</dd><dt>Địa chỉ</dt><dd>@Model.Address</dd><dt>Ghi chú của khách</dt><dd class="order-note">@(string.IsNullOrWhiteSpace(Model.Note)?"Không có ghi chú":Model.Note)</dd></dl></section>
+  <section class="admin-order-card"><h2><i class="fas fa-money-bill-wave" aria-hidden="true"></i> Thanh toán COD</h2><p class="shop-price">@Model.Total.ToString("N0",culture) ₫</p><p>@(Model.Status=="Completed"?"Đã giao hàng và thu đủ tiền.":Model.Status=="Cancelled"?"Đơn đã hủy, không thu tiền.":"Thu tiền khi giao hàng. Chưa ghi nhận thanh toán.")</p><p class="shop-muted">Phí giao hàng: 0 ₫</p></section>
+ </div>
+ <section class="admin-order-card"><h2><i class="fas fa-box-open" aria-hidden="true"></i> Sản phẩm trong đơn</h2><div class="shop-table-wrap"><table class="table"><thead><tr><th>Sản phẩm</th><th>Đơn giá</th><th>Số lượng</th><th>Thành tiền</th></tr></thead><tbody>@foreach(var item in Model.Items){<tr><td>@item.ProductName</td><td>@item.UnitPrice.ToString("N0",culture) ₫</td><td>@item.Quantity</td><td>@((item.UnitPrice*item.Quantity).ToString("N0",culture)) ₫</td></tr>}</tbody></table></div></section>
+ <section class="admin-order-card order-processing"><h2><i class="fas fa-tasks" aria-hidden="true"></i> Xử lý đơn hàng</h2>
+ @if(Model.Status=="Completed"||Model.Status=="Cancelled"){<p>Đơn đã kết thúc xử lý. Không còn thao tác chuyển trạng thái.</p>}
+ else {
+  <p>Kiểm tra thông tin đơn trước khi xác nhận. Chỉ hoàn tất khi đã giao hàng và thu đủ tiền COD.</p>
+  <div class="shop-actions">
+  @foreach(var state in new[]{"Confirmed","Shipping","Completed"}){if(OrderStates.CanMove(Model.Status,state)){
+   var label=state=="Confirmed"?"Xác nhận đơn hàng":state=="Shipping"?"Bắt đầu giao hàng":"Hoàn tất & đã thu COD";
+   var icon=state=="Confirmed"?"fa-check":state=="Shipping"?"fa-truck":"fa-check-double";
+   <form method="post" action="/Admin/ShopOrders/@Model.Id/Status" class="order-status-form" data-confirm="@label cho đơn #@Model.Id?">@Html.AntiForgeryToken()<input type="hidden" name="version" value="@Convert.ToBase64String(Model.Version)" /><input type="hidden" name="target" value="@state" /><input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" /><button class="shop-button"><i class="fas @icon" aria-hidden="true"></i> @label</button></form>
+  }}
+  </div>
+  @if(OrderStates.CanMove(Model.Status,"Cancelled")){
+   <details class="admin-order-cancel"><summary><i class="fas fa-ban" aria-hidden="true"></i> Hủy đơn hàng</summary><p>Chỉ hủy trước khi giao. Số lượng sản phẩm sẽ được hoàn lại tồn kho.</p><form method="post" action="/Admin/ShopOrders/@Model.Id/Status" class="order-status-form" data-confirm="Hủy đơn #@Model.Id và hoàn lại tồn kho?">@Html.AntiForgeryToken()<input type="hidden" name="version" value="@Convert.ToBase64String(Model.Version)" /><input type="hidden" name="target" value="Cancelled" /><input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" /><label>Lý do hủy<textarea name="reason" required maxlength="500" rows="3" placeholder="Nhập lý do để lưu vào lịch sử đơn hàng"></textarea></label><button class="shop-button secondary">Xác nhận hủy đơn</button></form></details>
+  }
+ }
+ </section>
+ <div class="admin-order-card"><partial name="_OrderHistory" model="Model" /></div>
+</section>
+@section Scripts {<script src="~/js/admin-orders.js" asp-append-version="true"></script>}

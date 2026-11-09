@@ -1,0 +1,6 @@
+@model TechNews.Models.DashboardViewModel
+@{Layout="~/Views/Shared/_LayoutAdmin.cshtml";ViewData["Title"]="Thống kê";}
+<div class="container-fluid"><h1>Thống kê nội dung</h1><div asp-validation-summary="All" class="text-danger"></div><form method="get"><label>Từ ngày <input name="from" type="date" value="@Model.From.ToString("yyyy-MM-dd")"/></label><label>Đến ngày <input name="to" type="date" value="@Model.To.ToString("yyyy-MM-dd")"/></label><button class="btn btn-primary">Xem</button></form>
+<p><strong>Lượt xem trong kỳ: @Model.PeriodViews</strong> · Tổng lượt xem tích lũy: @Model.TotalViews</p><p>Lượt xem theo ngày chỉ được ghi nhận từ khi triển khai chức năng này. Múi giờ UTC+7; mỗi bài được đếm một lần trong một session.</p>
+<h2>Trạng thái bài hiện tại</h2><ul>@foreach(var s in Model.States){<li>@s.Key: @s.Value bài</li>}</ul><h2>Chuyên mục hiện tại</h2><ul>@foreach(var c in Model.Categories){<li>@c.Key: @c.Value bài</li>}</ul>
+<h2>Lượt xem từng ngày</h2><table class="table"><thead><tr><th>Ngày</th><th>Lượt xem</th></tr></thead><tbody>@foreach(var d in Model.Days){<tr><td>@d.Day.ToString("dd/MM/yyyy")</td><td>@d.Views</td></tr>}</tbody></table></div>

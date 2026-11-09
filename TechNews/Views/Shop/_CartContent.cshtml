@@ -1,0 +1,36 @@
+﻿@model CartViewModel
+@{var culture=System.Globalization.CultureInfo.GetCultureInfo("vi-VN");}
+@if(Model.Lines.Count==0)
+{
+    <div class="cart-empty"><span class="cart-empty-icon" aria-hidden="true">＋</span><h2>Giỏ hàng đang trống</h2><p>Khám phá sản phẩm công nghệ và chọn món bạn yêu thích.</p><a class="cart-primary" href="/Shop">Khám phá sản phẩm →</a></div>
+}
+else
+{
+    <div class="cart-layout">
+        <div class="cart-items">
+            <div class="cart-items-title"><h2>Giỏ hàng của bạn</h2><span>@Model.Count sản phẩm</span></div>
+            @foreach(var line in Model.Lines)
+            {
+                var p=line.Product;
+                <article class="cart-item" data-product-id="@p.Id">
+                    <a class="cart-item-image" href="/Shop/Product/@p.Id"><img src="@(string.IsNullOrWhiteSpace(p.ImageUrl)?"/images/products/phone.svg":p.ImageUrl)" alt="@p.Name" width="112" height="112" /></a>
+                    <div class="cart-item-info"><span class="cart-item-category">@p.Category</span><h3><a href="/Shop/Product/@p.Id">@p.Name</a></h3><p class="cart-unit-price">@p.Price.ToString("N0",culture) ₫ / sản phẩm</p>
+                    @if(p.Description?.StartsWith("Sản phẩm mẫu.")==true){<span class="cart-demo-label">Sản phẩm mẫu · Giá minh họa</span>}
+                    @if(line.Unavailable){<p class="cart-item-warning" role="alert">@(!p.IsActive?"Sản phẩm đã ngừng bán. Hãy xóa khỏi giỏ.":p.Stock==0?"Sản phẩm đã hết hàng. Hãy xóa khỏi giỏ.":$"Chỉ còn {p.Stock} sản phẩm. Hãy giảm số lượng.")</p>}
+                    @if(line.PriceChanged){<p class="cart-item-warning" role="alert">Giá thay đổi từ @line.PreviousPrice.Value.ToString("N0",culture) ₫ thành @p.Price.ToString("N0",culture) ₫. Nhấn “Cập nhật” để xác nhận giá mới.</p>}
+                    <form method="post" action="/Shop/Cart/Update/@p.Id" class="cart-quantity-form" data-cart-update>
+                        @Html.AntiForgeryToken()
+                        <div class="cart-quantity"><button type="button" data-cart-step="-1" aria-label="Giảm số lượng @p.Name" disabled="@(line.Quantity<=1)">−</button><input aria-label="Số lượng @p.Name" type="number" name="quantity" value="@line.Quantity" min="1" max="99" required /><button type="button" data-cart-step="1" aria-label="Tăng số lượng @p.Name" disabled="@(!p.IsActive||line.Quantity>=Math.Min(99,p.Stock))">+</button></div>
+                        <button type="submit" class="cart-text-button">Cập nhật</button>
+                    </form></div>
+                    <div class="cart-item-end"><strong>@line.Total.ToString("N0",culture) ₫</strong><form method="post" action="/Shop/Cart/Update/@p.Id" data-cart-update>@Html.AntiForgeryToken()<input type="hidden" name="quantity" value="0" /><button class="cart-remove" aria-label="Xóa @p.Name">Xóa</button></form></div>
+                </article>
+            }
+            <p class="cart-storage-note">Giỏ hàng được giữ 30 ngày trên trình duyệt này. Giá và tồn kho được kiểm tra lại khi đặt hàng.</p>
+        </div>
+        <aside class="cart-summary" aria-labelledby="cart-summary-heading"><p class="cart-summary-kicker">SẴN SÀNG ĐẶT HÀNG</p><h2 id="cart-summary-heading">Tóm tắt đơn hàng</h2><dl><div><dt>Tạm tính (@Model.Count sản phẩm)</dt><dd>@Model.Total.ToString("N0",culture) ₫</dd></div><div><dt>Phí giao hàng</dt><dd class="cart-free">Miễn phí</dd></div><div class="cart-grand-total"><dt>Tổng thanh toán</dt><dd>@Model.Total.ToString("N0",culture) ₫</dd></div></dl>
+        @if(Model.HasIssues){<p class="cart-checkout-warning" role="alert">Kiểm tra các mục được đánh dấu bên cạnh trước khi đặt hàng.</p><button class="cart-primary" disabled>Đặt hàng →</button>}
+        else{<a class="cart-primary" href="/Shop/Checkout">Đặt hàng →</a>}
+        <p class="cart-checkout-note">Thanh toán khi nhận hàng (COD).<br />@(User.Identity.IsAuthenticated?"Thông tin nhận hàng được nhập ở bước tiếp theo.":"Bạn sẽ đăng nhập ở bước tiếp theo.")</p></aside>
+    </div>
+}

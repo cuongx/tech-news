@@ -1,0 +1,32 @@
+﻿@model AdminOrdersViewModel
+@{
+ ViewData["Title"]="Quản lý đơn hàng";
+ var returnUrl=Url.Action("Orders",new{q=Model.Q,status=Model.Status,from=Model.From,to=Model.To,page=Model.Page});
+ var culture=System.Globalization.CultureInfo.GetCultureInfo("vi-VN");
+}
+<link href="~/css/admin-orders.css" rel="stylesheet" asp-append-version="true" />
+<section class="shop-shell container-fluid admin-orders">
+ <header class="shop-heading"><div><h1>Quản lý đơn hàng</h1><p>Tìm kiếm và xử lý đơn hàng.</p></div><a class="shop-button secondary" href="/Admin/Products"><i class="fas fa-box" aria-hidden="true"></i> Quản lý sản phẩm</a></header>
+ <form method="get" action="/Admin/ShopOrders" class="shop-filters admin-order-filters">
+  <label class="order-search">Tìm đơn<input name="q" value="@Model.Q" maxlength="100" placeholder="Mã đơn, tên hoặc số điện thoại" /></label>
+  <label>Trạng thái<select name="status"><option value="">Tất cả trạng thái</option>@foreach(var state in new[]{"Pending","Confirmed","Shipping","Completed","Cancelled"}){<option value="@state" selected="@(state==Model.Status)">@OrderStates.Label(state)</option>}</select></label>
+  <label>Từ ngày<input type="date" name="from" value="@Model.From" min="1900-01-01" max="9998-12-31" /></label>
+  <label>Đến ngày<input type="date" name="to" value="@Model.To" min="1900-01-01" max="9998-12-31" /></label>
+  <div class="order-filter-actions"><button class="shop-button"><i class="fas fa-search" aria-hidden="true"></i> Tìm & lọc</button><a href="/Admin/ShopOrders">Xóa bộ lọc</a></div>
+ </form>
+ <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+ <div class="order-results"><strong>@Model.Total đơn hàng phù hợp</strong><span>Mới nhất trước · Ngày đặt theo giờ Việt Nam</span></div>
+ @if(Model.Orders.Count==0){<div class="shop-empty"><h2>Không có đơn hàng phù hợp</h2><p>Thử đổi từ khóa hoặc khoảng ngày.</p><a href="/Admin/ShopOrders">Xem tất cả đơn hàng →</a></div>}
+ else {
+ <div class="shop-table-wrap"><table class="table admin-orders-table"><caption class="sr-only">Danh sách đơn hàng phù hợp bộ lọc</caption><thead><tr><th>Mã đơn / ngày đặt</th><th>Khách nhận hàng</th><th>Tổng tiền COD</th><th>Trạng thái</th><th>Thao tác</th></tr></thead><tbody>
+ @foreach(var order in Model.Orders){
+  <tr data-order-id="@order.Id"><td><a class="order-id" href="@Url.Action("Order",new{id=order.Id,returnUrl})">#@order.Id</a><time datetime="@DateTime.SpecifyKind(order.CreatedUtc,DateTimeKind.Utc).ToString("O")">@order.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</time></td><td><strong>@order.Recipient</strong><span class="order-phone">@order.Phone</span></td><td class="order-amount">@order.Total.ToString("N0",culture) ₫<small>@(order.Status=="Completed"?"Đã thu tiền":order.Status=="Cancelled"?"Đã hủy":"Chưa thu tiền")</small></td><td><span class="shop-status" data-status="@order.Status">@OrderStates.Label(order.Status)</span></td><td><a class="shop-button secondary" href="@Url.Action("Order",new{id=order.Id,returnUrl})" aria-label="Xem và xử lý đơn @order.Id">Xem đơn →</a></td></tr>
+ }
+ </tbody></table></div>
+ <nav class="shop-pagination" aria-label="Phân trang đơn hàng">
+ @if(Model.Page>1){<a rel="prev" href="@Url.Action("Orders",new{q=Model.Q,status=Model.Status,from=Model.From,to=Model.To,page=Model.Page-1})">← Trước</a>}
+ <span>Trang @Model.Page / @Model.Pages</span>
+ @if(Model.Page<Model.Pages){<a rel="next" href="@Url.Action("Orders",new{q=Model.Q,status=Model.Status,from=Model.From,to=Model.To,page=Model.Page+1})">Sau →</a>}
+ </nav>
+ }
+</section>

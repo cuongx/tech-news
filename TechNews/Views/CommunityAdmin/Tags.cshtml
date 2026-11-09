@@ -1,0 +1,5 @@
+@model List<TechNews.Models.Tag>
+@{Layout="~/Views/Shared/_LayoutAdmin.cshtml";ViewData["Title"]="Quản lý tag";}
+<div class="container-fluid"><h1>Quản lý tag</h1><form method="post">@Html.AntiForgeryToken()<label>Tag mới <input name="name" required maxlength="60"/></label><button class="btn btn-primary">Thêm</button></form>
+@foreach(var t in Model){<form method="post" class="border-bottom py-3">@Html.AntiForgeryToken()<input name="id" type="hidden" value="@t.Id"/><label>Tên tag <input name="name" value="@t.Name" required maxlength="60"/></label><button class="btn btn-primary">Lưu</button><button class="btn btn-danger" name="delete" value="true">Xóa</button></form>}
+</div>

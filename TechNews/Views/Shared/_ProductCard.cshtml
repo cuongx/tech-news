@@ -1,0 +1,32 @@
+﻿@model TechNews.Models.Product
+@{
+    var preview = Model.Id == 0;
+    var demo = Model.Description?.StartsWith("Sản phẩm mẫu.") == true;
+    var link = preview ? "/Admin/Login" : $"/Shop/Product/{Model.Id}";
+    var image = string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/images/products/phone.svg" : Model.ImageUrl;
+}
+<article class="home-product-card product-card-refined">
+    <a class="home-product-image" href="@link" aria-label="Xem chi tiết @Model.Name">
+        @if (demo) { <span class="product-demo-badge">Mẫu</span> }
+        <img src="@image" alt="@Model.Name" width="240" height="200" loading="lazy" />
+        <span class="product-image-link" aria-hidden="true">↗</span>
+    </a>
+    <div class="home-product-info">
+        <span class="home-product-category">@Model.Category</span>
+        <h3><a href="@link">@Model.Name</a></h3>
+        @if (preview) { <p class="home-product-coming">Sắp mở bán</p> }
+        else
+        {
+            <p class="home-product-price">@Model.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN")) <span>₫</span></p>
+            <p class="product-availability @(Model.Stock > 0 ? "" : "is-sold-out")">@(Model.Stock > 0 ? "Còn hàng" : "Tạm hết hàng")</p>
+        }
+        <form method="post" action="/Shop/Cart/Add/@Model.Id" class="product-add-form">
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="quantity" value="1" />
+            <button type="submit" class="product-add-button" disabled="@(preview || Model.Stock == 0)" aria-label="Thêm @Model.Name vào giỏ hàng">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 3h3l2.4 12h11.4l2.1-8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>
+                Thêm vào giỏ
+            </button>
+        </form>
+    </div>
+</article>

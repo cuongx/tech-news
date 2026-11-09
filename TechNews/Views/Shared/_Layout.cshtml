@@ -1,0 +1,85 @@
+@inject TechNews.Services.ShoppingCartStore ShoppingCart
+@{
+    var homeEditorial = true;
+}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>@(ViewData["Title"] ?? "Tin tức công nghệ") | TechNews</title>
+    <link href="~/css/bootstrap.css" rel="stylesheet">
+    <link href="~/css/tech-navigation.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/newsroom.css" rel="stylesheet" asp-append-version="true">
+    @if (Context.Request.Path.StartsWithSegments("/Shop"))
+    {
+        <link href="~/css/shop.css" rel="stylesheet" asp-append-version="true">
+    }
+    <link href="~/css/home-products.css" rel="stylesheet" asp-append-version="true">
+    <link href="~/css/cart.css" rel="stylesheet" asp-append-version="true">
+    <script src="~/vendor/jquery/jquery.min.js"></script>
+</head>
+<body class="newsroom newsroom-home @(ViewData["PublicPage"] as string)">
+    <a class="skip-content" href="#main-content">Đến nội dung chính</a>
+    <header class="news-masthead" id="site-top">
+        <div class="container masthead-inner">
+            <a class="news-brand" href="/" aria-label="TechNews — Trang chủ"><strong>tech<span>news</span><i>.</i></strong><small>NHỊP SỐNG CÔNG NGHỆ</small></a>
+            @if (homeEditorial)
+            {
+                @await Component.InvokeAsync("Categories")
+            }
+            else
+            {
+                <span class="masthead-note">Hiểu công nghệ. Kết nối tương lai.</span>
+            }
+            <form class="news-search" action="/Search" method="get" role="search">
+                <label class="sr-only" for="news-query">Tìm bài viết</label>
+                <input id="news-query" type="search" name="q" value="@Context.Request.Query["q"]" placeholder="Tìm kiếm bài viết…">
+                <button type="submit" aria-label="Tìm kiếm"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="10" cy="10" r="6"/><path d="m15 15 6 6"/></svg></button>
+            </form>
+            @if (homeEditorial)
+            {
+                <div class="home-header-actions">
+                    <a class="home-cart" href="/Shop/Cart" aria-label="Giỏ hàng" title="Giỏ hàng"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h3l2.4 12h11.4l2.1-8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="cart-badge" data-cart-count hidden="@(ShoppingCart.Count == 0)">@ShoppingCart.Count</span></a>
+                    <a class="home-account" href="@(User.Identity.IsAuthenticated ? "/Account" : "/Admin/Login")" aria-label="Tài khoản" title="Tài khoản"><svg width="23" height="23" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3H4Z"/></svg></a>
+                </div>
+            }
+        </div>
+    </header>
+    @if (!homeEditorial)
+    {
+        @await Component.InvokeAsync("Categories")
+    }
+    <main id="main-content" tabindex="-1">@if(TempData["Message"] != null){<div class="container alert alert-info" role="status">@TempData["Message"]</div>}@RenderBody()</main>
+    <footer class="news-footer" aria-label="Thông tin TechNews">
+        <div class="container">
+            <div class="footer-intro">
+                <a class="news-brand" href="/" aria-label="TechNews — Trang chủ"><strong>tech<span>news</span><i>.</i></strong><small>NHỊP SỐNG CÔNG NGHỆ</small></a>
+                <p>Góc nhìn, kiến thức và những chuyển động trong thế giới công nghệ. Cùng TechNews khám phá nhịp sống số mỗi ngày.</p>
+            </div>
+            <nav class="footer-links" aria-label="Khám phá TechNews">
+                <h2>Khám phá</h2>
+                <a href="/#latest-heading">Tin mới nhất <span aria-hidden="true">↗</span></a>
+                <a href="/#reviews-heading">Góc đánh giá <span aria-hidden="true">↗</span></a>
+                <a href="/#notable-heading">Tin đáng chú ý <span aria-hidden="true">↗</span></a>
+            </nav>
+            <div class="footer-editorial">
+                <h2>Không gian biên tập</h2>
+                <p>Truy cập khu vực quản trị để biên tập và quản lý nội dung TechNews.</p>
+                <a class="footer-editor-link" href="/Admin/Login">Dành cho biên tập viên <span aria-hidden="true">↗</span></a>
+            </div>
+            <div class="footer-bottom">
+                <small>© @DateTime.Now.Year TechNews. Nhịp sống công nghệ.</small>
+                <a class="footer-top" href="#site-top">Về đầu trang <span aria-hidden="true">↑</span></a>
+            </div>
+        </div>
+    </footer>
+    <script>
+        const strip = document.querySelector('.topic-tabs');
+        const selected = document.querySelector('.topic-tab.is-active');
+        if (strip && selected) strip.scrollLeft = Math.max(0, selected.offsetLeft - strip.offsetLeft - 12);
+    </script>
+    <div id="cart-notification" class="cart-notification" role="status" aria-live="polite" hidden><span class="cart-notification-message"></span><a href="/Shop/Cart">Xem giỏ hàng →</a><button type="button" aria-label="Đóng thông báo">×</button></div>
+    <script src="~/js/cart.js" asp-append-version="true" defer></script>
+</body>
+</html>

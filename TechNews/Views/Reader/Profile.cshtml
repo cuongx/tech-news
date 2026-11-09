@@ -1,0 +1,60 @@
+@model TechNews.Models.User
+@{
+ Layout="~/Views/Shared/_Layout.cshtml";
+ ViewData["Title"]="Tài khoản của tôi";
+ var displayName=Model.UserName ?? Model.UserLogin ?? "Tài khoản";
+ var initial=System.Globalization.StringInfo.GetNextTextElement(string.IsNullOrWhiteSpace(displayName)?"T":displayName.Trim()).ToUpperInvariant();
+ var message=TempData["Message"] as string;
+ var passwordError=TempData["AccountPasswordError"] as string;
+ TempData.Remove("Message");
+}
+<link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+<section class="container account-page">
+ <nav class="account-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span aria-hidden="true">/</span><span>Tài khoản</span></nav>
+ <header class="account-heading"><h1>Tài khoản của tôi</h1><p>Quản lý thông tin cá nhân và các hoạt động của bạn.</p></header>
+ @if(!string.IsNullOrEmpty(message)){<div class="account-notice success" role="status">@message</div>}
+ <div class="account-grid">
+  <aside class="account-sidebar">
+   <div class="account-person"><span class="account-avatar" aria-hidden="true">@initial</span><div><h2>@displayName</h2><p>@@@Model.UserLogin</p></div></div>
+   <nav class="account-menu" aria-label="Menu tài khoản">
+    <a href="/Account" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21v-2a8 8 0 0 1 16 0v2"/></svg>Thông tin cá nhân</a>
+    <a href="/Shop/Orders"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v16H5zM9 5V3h6v2M8 10h8M8 14h8M8 18h5"/></svg>Đơn hàng của tôi</a>
+    <a href="/Account/Saved"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-6-4-6 4z"/></svg>Bài viết đã lưu</a>
+    <a href="/Account/Comments"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 4H3v13h5v4l5-4h8zM7 8h10M7 12h7"/></svg>Bình luận của tôi</a>
+   </nav>
+   <form method="post" action="/Admin/Logout" class="account-logout">@Html.AntiForgeryToken()<button><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H4v16h5M9 12h12m-4-4 4 4-4 4"/></svg>Đăng xuất</button></form>
+  </aside>
+  <div class="account-content">
+   <section class="account-panel" aria-labelledby="account-info-title">
+    <header><h2 id="account-info-title">Thông tin cá nhân</h2><p>Các trường có dấu * là bắt buộc.</p></header>
+    <form method="post" action="/Account" id="profile-form">
+     @Html.AntiForgeryToken()
+     <div asp-validation-summary="All" class="account-validation" role="alert"></div>
+     <div class="account-fields">
+      <div class="account-field full"><label asp-for="UserName">Tên hiển thị <span>*</span></label><input asp-for="UserName" required maxlength="50" autocomplete="name" aria-describedby="account-name-help" /><small id="account-name-help">Tên hiển thị khi bạn bình luận trên website.</small></div>
+      <div class="account-field"><label asp-for="UserEmail">Email <span>*</span></label><input asp-for="UserEmail" type="email" required maxlength="50" autocomplete="email" /></div>
+      <div class="account-field"><label asp-for="UserLogin">Tên đăng nhập <span>*</span></label><input asp-for="UserLogin" required maxlength="50" autocomplete="username" aria-describedby="account-login-help" /><small id="account-login-help">Có thể dùng tên này hoặc email để đăng nhập.</small></div>
+     </div>
+     <footer class="account-form-footer"><span id="profile-save-hint" aria-live="polite">Chưa có thay đổi.</span><div><button type="reset" class="account-button secondary">Hoàn tác</button><button class="account-button" type="submit">Lưu thông tin</button></div></footer>
+    </form>
+   </section>
+   <section class="account-panel" aria-labelledby="account-password-title">
+    <header><h2 id="account-password-title">Mật khẩu</h2><p>Dùng mật khẩu riêng để bảo vệ tài khoản.</p></header>
+    <details class="account-password" open="@(!string.IsNullOrEmpty(passwordError))">
+     <summary>Đổi mật khẩu <span aria-hidden="true">⌄</span></summary>
+     <form method="post" action="/Account/Password" id="profile-password-form">
+      @Html.AntiForgeryToken()
+      @if(!string.IsNullOrEmpty(passwordError)){<div class="account-notice error" role="alert">@passwordError</div>}
+      <div class="account-fields">
+       <div class="account-field full"><label for="oldPassword">Mật khẩu hiện tại</label><div class="account-password-input"><input id="oldPassword" name="oldPassword" type="password" required autocomplete="current-password" /><button type="button" data-password="oldPassword" aria-label="Hiện mật khẩu hiện tại" aria-pressed="false" hidden>Hiện</button></div></div>
+       <div class="account-field"><label for="newPassword">Mật khẩu mới</label><div class="account-password-input"><input id="newPassword" name="newPassword" type="password" required minlength="8" maxlength="128" autocomplete="new-password" aria-describedby="account-password-help" /><button type="button" data-password="newPassword" aria-label="Hiện mật khẩu mới" aria-pressed="false" hidden>Hiện</button></div><small id="account-password-help">Mật khẩu cần từ 8–128 ký tự.</small></div>
+       <div class="account-field"><label for="confirmPassword">Nhập lại mật khẩu mới</label><div class="account-password-input"><input id="confirmPassword" name="confirmPassword" type="password" required minlength="8" maxlength="128" autocomplete="new-password" /><button type="button" data-password="confirmPassword" aria-label="Hiện mật khẩu xác nhận" aria-pressed="false" hidden>Hiện</button></div></div>
+      </div>
+      <div class="account-password-actions"><button type="reset" class="account-button secondary">Xóa nội dung</button><button type="submit" class="account-button">Cập nhật mật khẩu</button></div>
+     </form>
+    </details>
+   </section>
+  </div>
+ </div>
+</section>
+<script src="~/js/account.js" asp-append-version="true" defer></script>

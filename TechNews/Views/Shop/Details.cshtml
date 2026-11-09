@@ -1,0 +1,37 @@
+﻿@model Product
+@{
+    ViewData["Title"] = Model.Name;
+    var demo = Model.Description?.StartsWith("Sản phẩm mẫu.") == true;
+    var related = ViewBag.RelatedProducts as List<Product> ?? new List<Product>();
+    var image = string.IsNullOrWhiteSpace(Model.ImageUrl) ? "/images/products/phone.svg" : Model.ImageUrl;
+    var price = Model.Price.ToString("N0", System.Globalization.CultureInfo.GetCultureInfo("vi-VN"));
+}
+<section class="container product-detail-page">
+    <nav class="product-breadcrumb" aria-label="Đường dẫn"><a href="/">Trang chủ</a><span>/</span><a href="/Shop">Sản phẩm</a><span>/</span><span aria-current="page">@Model.Name</span></nav>
+    <div class="product-detail-grid">
+        <div class="product-gallery">
+            <div class="product-gallery-heading"><span>TECHNEWS <strong>SELECT</strong></span><span>@Model.Category</span></div>
+            <div class="product-main-image"><img src="@image" alt="@Model.Name" width="600" height="500" fetchpriority="high" /></div>
+            <div class="product-gallery-caption"><span>@Model.Name</span><span>@(demo ? "Hình minh họa" : "Ảnh sản phẩm")</span></div>
+        </div>
+        <div class="product-purchase-panel">
+            <p class="product-detail-category">@Model.Category</p>
+            <h1>@Model.Name</h1>
+            <div class="product-detail-meta"><span class="product-availability @(Model.Stock > 0 ? "" : "is-sold-out")">@(Model.Stock > 0 ? "Có sẵn" : "Tạm hết hàng")</span><span>Mã: TN-@Model.Id.ToString("D4")</span></div>
+            <div class="product-price-box"><span>Giá sản phẩm</span><strong>@price <small>₫</small></strong><p>Thanh toán khi nhận hàng · Phí giao hàng 0 ₫</p></div>
+            @if(demo){<p class="product-demo-note">Sản phẩm mẫu, giá minh họa để trải nghiệm đặt hàng.</p>}
+            <form method="post" action="/Shop/Cart/Add/@Model.Id" class="product-purchase-form">
+                @Html.AntiForgeryToken()
+                <div class="product-quantity-row"><label for="product-quantity">Số lượng</label><input id="product-quantity" name="quantity" type="number" value="1" min="1" max="@Math.Max(1,Math.Min(Model.Stock,99))" required disabled="@(Model.Stock==0)" /><span>Còn @Model.Stock sản phẩm</span></div>
+                <button class="product-add-button product-detail-add" disabled="@(Model.Stock==0)"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M2 3h3l2.4 12h11.4l2.1-8H6"/><circle cx="9" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg>Thêm vào giỏ hàng</button>
+            </form>
+            <a class="product-view-cart" href="/Shop/Cart">Xem giỏ hàng <span aria-hidden="true">→</span></a>
+            <div class="product-order-notes"><div><strong>01</strong><span>Chọn sản phẩm<br /><small>Thêm số lượng bạn cần</small></span></div><div><strong>02</strong><span>Nhận hàng & thanh toán<br /><small>Đặt hàng với tài khoản TechNews</small></span></div></div>
+        </div>
+    </div>
+    <div class="product-information">
+        <section aria-labelledby="product-description-heading"><p class="product-detail-category">KHÁM PHÁ SẢN PHẨM</p><h2 id="product-description-heading">Thông tin sản phẩm</h2><p class="product-description-text">@(string.IsNullOrWhiteSpace(Model.Description) ? "Thông tin chi tiết đang được cập nhật." : Model.Description)</p></section>
+        <dl class="product-facts"><div><dt>Danh mục</dt><dd>@Model.Category</dd></div><div><dt>Mã sản phẩm</dt><dd>TN-@Model.Id.ToString("D4")</dd></div><div><dt>Thanh toán</dt><dd>Khi nhận hàng (COD)</dd></div><div><dt>Phí giao hàng</dt><dd>0 ₫</dd></div></dl>
+    </div>
+    @if(related.Count>0){<section class="product-related" aria-labelledby="related-heading"><header><h2 id="related-heading">Khám phá thêm</h2><a href="/Shop">Tất cả sản phẩm →</a></header><div class="product-related-grid">@foreach(var product in related){<partial name="_ProductCard" model="product" />}</div></section>}
+</section>
