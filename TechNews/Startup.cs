@@ -38,6 +38,7 @@ namespace TechNews
             services.AddHttpContextAccessor();
             services.AddScoped<ShoppingCartStore>();
             services.AddScoped<OrderWorkflow>();
+            services.AddSingleton<AddressCatalog>();
             services.AddHostedService<PublicationWorker>();
 
             services.AddSingleton<FileService>();

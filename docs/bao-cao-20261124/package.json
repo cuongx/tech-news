@@ -1,0 +1,1 @@
+{"private":true,"scripts":{"build":"node build-report.cjs","capture":"node capture-browser.cjs"},"dependencies":{"docx":"9.16.0"},"devDependencies":{"playwright":"1.65.1"}}

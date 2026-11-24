@@ -74,8 +74,8 @@ namespace TechNews.Controllers
         {
             int authorId = Int32.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
             if(authorId != id) return Forbid();
-            if(string.IsNullOrEmpty(newPassword) || newPassword.Length < 8 || newPassword.Length > 128 || !_usersService.CheckPassWord(id,oldPassword))
-            { TempData["ProfilePasswordError"]="Mật khẩu hiện tại chưa đúng hoặc mật khẩu mới không đủ 8–128 ký tự."; return Redirect($"/Admin/Profile/{id}"); }
+            if(string.IsNullOrEmpty(newPassword) || newPassword.Length < 1 || newPassword.Length > 128 || !_usersService.CheckPassWord(id,oldPassword))
+            { TempData["ProfilePasswordError"]="Mật khẩu hiện tại chưa đúng hoặc mật khẩu mới để trống hoặc vượt quá 128 ký tự."; return Redirect($"/Admin/Profile/{id}"); }
             if(authorId == id && _usersService.CheckPassWord(id, oldPassword))
             {
                 TempData["Message"] = "Đổi mật khẩu thành công";

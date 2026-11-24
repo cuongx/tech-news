@@ -34,8 +34,8 @@ public class ReaderController:Controller {
  }
  [HttpPost("Account/Password")]
  public IActionResult Password(string oldPassword,string newPassword,string confirmPassword){
-  if(newPassword==null||newPassword.Length<8||newPassword.Length>128||newPassword!=confirmPassword||!users.CheckPassWord(Actor,oldPassword))
-   TempData["AccountPasswordError"]="Mật khẩu hiện tại chưa đúng, hoặc mật khẩu mới/xác nhận chưa hợp lệ (8–128 ký tự).";
+  if(newPassword==null||newPassword.Length<1||newPassword.Length>128||newPassword!=confirmPassword||!users.CheckPassWord(Actor,oldPassword))
+   TempData["AccountPasswordError"]="Mật khẩu hiện tại chưa đúng, hoặc mật khẩu mới/xác nhận chưa hợp lệ (không để trống, tối đa 128 ký tự).";
   else {users.ChangePassword(Actor,newPassword);TempData["Message"]="Đã đổi mật khẩu.";}
   return Redirect("/Account");
  }

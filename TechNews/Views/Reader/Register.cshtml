@@ -4,6 +4,6 @@
 <label>Tên hiển thị</label><input asp-for="UserName" class="form-control" required maxlength="50" />
 <label>Tên đăng nhập</label><input asp-for="UserLogin" class="form-control" required maxlength="50" autocomplete="username" />
 <label>Email</label><input asp-for="UserEmail" type="email" class="form-control" required maxlength="50" />
-<label>Mật khẩu (8–128 ký tự)</label><input name="UserPassword" type="password" class="form-control" required minlength="8" maxlength="128" autocomplete="new-password" />
+<label>Mật khẩu (tối đa 128 ký tự)</label><input name="UserPassword" type="password" class="form-control" required maxlength="128" autocomplete="new-password" />
 <label>Xác nhận mật khẩu</label><input name="confirmPassword" type="password" class="form-control" required autocomplete="new-password" />
 <button class="btn btn-primary my-3">Đăng ký</button> <a href="/Admin/Login">Đã có tài khoản? Đăng nhập</a></form></div>

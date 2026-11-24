@@ -1,0 +1,22 @@
+@model ShippingAddressInput
+@inject TechNews.Services.AddressCatalog Addresses
+<div class="shipping-address-fields">
+ <div class="shop-form-row">
+  <div><label for="ProvinceCode">Tỉnh / thành phố *</label>
+   <select asp-for="ProvinceCode" required autocomplete="address-level1"><option value="">Chọn tỉnh / thành phố</option>
+    @foreach(var province in Addresses.Provinces){<option value="@province.Code">@province.Name</option>}
+   </select><span asp-validation-for="ProvinceCode" class="text-danger"></span>
+  </div>
+  <div><label for="WardCode">Phường / xã *</label>
+   <select asp-for="WardCode" required autocomplete="address-level2"><option value="">Chọn phường / xã</option>
+    @foreach(var province in Addresses.Provinces){<optgroup label="@province.Name" data-province="@province.Code">@foreach(var ward in province.Wards){<option value="@ward.Code">@ward.Name</option>}</optgroup>}
+   </select><span asp-validation-for="WardCode" class="text-danger"></span>
+  </div>
+ </div>
+ <label for="Address">Số nhà, tên đường / thôn, xóm *</label>
+ <textarea asp-for="Address" autocomplete="address-line1" required minlength="5" maxlength="300" rows="3" placeholder="Ví dụ: 12 Nguyễn Văn Linh, căn hộ A201" aria-describedby="address-help"></textarea>
+ <span asp-validation-for="Address" class="text-danger"></span>
+ <p id="address-help" class="shop-muted">Nhập địa chỉ cụ thể để cửa hàng xác nhận giao hàng. Không cần nhập lại tỉnh/thành và phường/xã.</p>
+ <noscript><p>Trong danh sách phường/xã, chọn đúng nhóm tỉnh/thành đã chọn ở trên.</p></noscript>
+</div>
+<script src="~/js/shipping-address.js" asp-append-version="true" defer></script>

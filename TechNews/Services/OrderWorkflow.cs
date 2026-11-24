@@ -9,6 +9,35 @@ namespace TechNews.Services
     {
         private readonly BLOGDBContext db;
         public OrderWorkflow(BLOGDBContext db) { this.db = db; }
+        public (int Code, string Message) ChangeAddress(int id, int actorId, OrderAddressInput input, string fullAddress)
+        {
+            try
+            {
+                using var tx = db.Database.BeginTransaction(IsolationLevel.Serializable);
+                var order = db.ShopOrders.FirstOrDefault(o => o.Id == id && o.UserId == actorId);
+                if (order == null) return (404, "Đơn hàng không tồn tại.");
+                if (order.Status != "Pending") return (409, "Chỉ được sửa địa chỉ khi đơn còn chờ xác nhận. Hãy liên hệ cửa hàng nếu cần hỗ trợ.");
+                if (input.Version == null || !order.Version.SequenceEqual(input.Version))
+                    return (409, "Đơn hàng đã thay đổi. Tải lại trang trước khi sửa địa chỉ.");
+                if (order.Address == fullAddress && order.ProvinceCode == input.ProvinceCode && order.WardCode == input.WardCode)
+                    return (200, "Địa chỉ nhận hàng không thay đổi.");
+                order.History.Add(new ShopOrderEvent {
+                    Status = order.Status, ActorRole = "Customer", ActorId = actorId,
+                    Reason = "Cập nhật địa chỉ nhận hàng.", AddressBefore = order.Address, AddressAfter = fullAddress
+                });
+                order.Address = fullAddress;
+                order.AddressLine = input.Address;
+                order.ProvinceCode = input.ProvinceCode;
+                order.WardCode = input.WardCode;
+                db.SaveChanges(); tx.Commit();
+                return (200, "Đã cập nhật địa chỉ nhận hàng.");
+            }
+            catch (Exception ex) when (ex is DbUpdateException || CommerceConflicts.IsRetryable(ex))
+            {
+                db.ChangeTracker.Clear();
+                return (409, "Đơn hàng vừa thay đổi. Tải lại trang và kiểm tra trạng thái trước khi sửa.");
+            }
+        }
         // Null means the order does not exist or is not owned by this customer.
         public string Move(int id, string target, byte[] version, string reason, int actorId, bool admin)
         {

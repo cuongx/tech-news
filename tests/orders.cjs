@@ -24,7 +24,7 @@ class Client {
   await owner.request('/Shop/Product/'+product);await owner.request('/Shop/Cart/Add/'+product,{quantity:'2'});
   const checkout=await owner.request('/Shop/Checkout');assert.equal(checkout.status,200);
   assert.ok(checkout.text.includes('checkout-review'));
-  const input={Token:field(checkout.text,'Token'),Recipient:'QA Owner',Phone:'0901234567',Address:'QA address'};
+  const input={Token:field(checkout.text,'Token'),Recipient:'QA Owner',Phone:'0901234567',ProvinceCode:'1',WardCode:'4',Address:'QA address'};
   const placed=await owner.request('/Shop/Checkout',input);assert.equal(placed.status,302);
   const id=placed.location.match(/\d+$/)[0];assert.equal(count(id),'1');
   assert.equal((await owner.request('/Shop/Checkout',input)).location,placed.location);assert.equal(count(id),'1','replay does not duplicate history');

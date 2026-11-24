@@ -6,6 +6,7 @@
   <li><strong>@OrderStates.Label(entry.Status)</strong><time datetime="@(DateTime.SpecifyKind(entry.CreatedUtc, DateTimeKind.Utc).ToString("O"))">@entry.CreatedUtc.AddHours(7).ToString("dd/MM/yyyy HH:mm")</time>
    <span>@(entry.ActorRole=="Admin"?"Cửa hàng":entry.ActorRole=="Customer"?"Khách hàng":"Hệ thống")</span>
    @if(!string.IsNullOrWhiteSpace(entry.Reason)){<p>@entry.Reason</p>}
+   @if(entry.AddressAfter!=null){<details><summary>Chi tiết thay đổi địa chỉ</summary><p><strong>Trước:</strong> @entry.AddressBefore</p><p><strong>Sau:</strong> @entry.AddressAfter</p></details>}
   </li>
  }
  </ol><small class="shop-muted">Thời gian hiển thị theo giờ Việt Nam.</small>

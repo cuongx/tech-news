@@ -1,0 +1,113 @@
+{
+  "capturedAt": "2026-11-24T15:40:38.183Z",
+  "browser": "158.0.4370.33",
+  "checks": [
+    {
+      "width": 375,
+      "path": "/",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "path": "/Shop?q=%5BM%E1%BA%AAU%5D",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "path": "/Shop/Product/1039",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "path": "/Shop/Cart",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "path": "/Account",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "path": "/Admin/Products/Create",
+      "overflow": false
+    },
+    {
+      "width": 375,
+      "path": "/Admin/ShopOrders/1874",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/Shop?q=%5BM%E1%BA%AAU%5D",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/Shop/Product/1039",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/Shop/Cart",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/Account",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/Admin/Products/Create",
+      "overflow": false
+    },
+    {
+      "width": 768,
+      "path": "/Admin/ShopOrders/1874",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/Shop?q=%5BM%E1%BA%AAU%5D",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/Shop/Product/1039",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/Shop/Cart",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/Account",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/Admin/Products/Create",
+      "overflow": false
+    },
+    {
+      "width": 1440,
+      "path": "/Admin/ShopOrders/1874",
+      "overflow": false
+    }
+  ],
+  "errors": [],
+  "orderId": "1874"
+}

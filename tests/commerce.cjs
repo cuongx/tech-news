@@ -32,7 +32,7 @@ class Client {
  await reader.request('/Shop/Cart/Add/'+id,{quantity:'4'});assert.equal(sql('SELECT Stock FROM Products WHERE Id='+id),'3');assert.ok(!(await reader.request('/Shop/Cart')).text.includes(data.Name),'overstock not added');
  await reader.request('/Shop/Cart/Add/'+id,{quantity:'2'});
  let checkout=await reader.request('/Shop/Checkout');assert.equal(checkout.status,200);
- let token=field(checkout.text,'Token');const shipping={Token:token,Recipient:'QA Customer',Phone:'0901234567',Address:'Test address',Note:'Test order',Total:'1'};
+ let token=field(checkout.text,'Token');const shipping={Token:token,Recipient:'QA Customer',Phone:'0901234567',ProvinceCode:'1',WardCode:'4',Address:'Test address',Note:'Test order',Total:'1'};
  assert.equal((await reader.request('/Shop/Checkout',{...shipping,Phone:'x'})).status,200,'invalid shipping');
  const edit=await admin.request('/Admin/Products/'+id+'/Edit');const version=field(edit.text,'Version');
  assert.equal((await admin.request('/Admin/Products/Save',{...data,Id:id,Version:version,Price:'150000'})).status,302);

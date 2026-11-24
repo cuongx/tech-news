@@ -16,7 +16,8 @@ namespace TechNews.Controllers {
   private readonly BLOGDBContext db;
   private readonly ShoppingCartStore store;
   private readonly OrderWorkflow workflow;
-  public ShopController(BLOGDBContext db, ShoppingCartStore store, OrderWorkflow workflow){this.db=db;this.store=store;this.workflow=workflow;}
+  private readonly AddressCatalog addresses;
+  public ShopController(BLOGDBContext db, ShoppingCartStore store, OrderWorkflow workflow, AddressCatalog addresses){this.db=db;this.store=store;this.workflow=workflow;this.addresses=addresses;}
   private int Actor=>int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier));
   private Dictionary<int,int> ReadCart()=>store.Read();
   private void SaveCart(Dictionary<int,int> cart)=>store.Save(cart);
@@ -74,6 +75,7 @@ namespace TechNews.Controllers {
    var existing=db.ShopOrders.AsNoTracking().FirstOrDefault(o=>o.UserId==Actor&&o.CheckoutToken==input.Token);
    if(existing!=null)return RedirectToAction(nameof(Order),new{id=existing.Id});
    if(input.Token==Guid.Empty||HttpContext.Session.GetString("CheckoutToken")!=input.Token.ToString())return BadRequest("Phiên đặt hàng đã thay đổi. Vui lòng mở lại trang thanh toán.");
+   var fullAddress=addresses.ValidateAndFormat(input,ModelState);
    ViewBag.Cart=CartModel();if(!ModelState.IsValid)return View(input);
    var cart=ReadCart();if(cart.Count==0)return RedirectToAction(nameof(Cart));
    try{
@@ -85,7 +87,7 @@ namespace TechNews.Controllers {
      HttpContext.Session.SetString("CheckoutPrices",JsonSerializer.Serialize(products.ToDictionary(p=>p.Id,p=>p.Price)));
      ViewBag.Cart=CartModel();ModelState.AddModelError("","Giá sản phẩm vừa thay đổi. Kiểm tra tổng tiền mới rồi xác nhận lại.");return View(input);
     }
-    var order=new ShopOrder{UserId=Actor,CheckoutToken=input.Token,Recipient=input.Recipient.Trim(),Phone=input.Phone.Trim(),Address=input.Address.Trim(),Note=input.Note?.Trim()};
+    var order=new ShopOrder{UserId=Actor,CheckoutToken=input.Token,Recipient=input.Recipient.Trim(),Phone=input.Phone.Trim(),Address=fullAddress,AddressLine=input.Address,ProvinceCode=input.ProvinceCode,WardCode=input.WardCode,Note=input.Note?.Trim()};
     foreach(var p in products){var qty=cart[p.Id];p.Stock-=qty;order.Items.Add(new ShopOrderItem{ProductId=p.Id,ProductName=p.Name,UnitPrice=p.Price,Quantity=qty});}
     order.History.Add(new ShopOrderEvent{Status="Pending",ActorRole="Customer",ActorId=Actor,CreatedUtc=order.CreatedUtc});
     order.Total=order.Items.Sum(i=>i.UnitPrice*i.Quantity);db.ShopOrders.Add(order);db.SaveChanges();tx.Commit();
@@ -98,6 +100,27 @@ namespace TechNews.Controllers {
    var message=workflow.Move(id,"Cancelled",version,reason,Actor,false);
    if(message==null)return NotFound();
    TempData["Message"]=message;return RedirectToAction(nameof(Order),new{id});
+  }
+  [Authorize,HttpGet("Shop/Orders/{id:int}/Address")]
+  public IActionResult EditAddress(int id){
+   var order=db.ShopOrders.AsNoTracking().FirstOrDefault(o=>o.Id==id&&o.UserId==Actor);
+   if(order==null)return NotFound();
+   if(order.Status!="Pending"){TempData["Message"]="Chỉ được sửa địa chỉ khi đơn còn chờ xác nhận.";return RedirectToAction(nameof(Order),new{id});}
+   // Legacy orders retain their original text until the customer chooses the new fields.
+   ViewBag.PreviousAddress=order.Address;
+   return View(new OrderAddressInput{OrderId=id,Version=order.Version,ProvinceCode=order.ProvinceCode,WardCode=order.WardCode,Address=order.AddressLine});
+  }
+  [Authorize,HttpPost("Shop/Orders/{id:int}/Address")]
+  public IActionResult EditAddress(int id,OrderAddressInput input){
+   var order=db.ShopOrders.AsNoTracking().FirstOrDefault(o=>o.Id==id&&o.UserId==Actor);
+   if(order==null)return NotFound();
+   input.OrderId=id;ViewBag.PreviousAddress=order.Address;
+   var fullAddress=addresses.ValidateAndFormat(input,ModelState);
+   if(!ModelState.IsValid)return View(input);
+   var result=workflow.ChangeAddress(id,Actor,input,fullAddress);
+   if(result.Code==404)return NotFound();
+   if(result.Code!=200){Response.StatusCode=result.Code;ModelState.AddModelError("",result.Message);return View(input);}
+   TempData["Message"]=result.Message;return RedirectToAction(nameof(Order),new{id});
   }
   [Authorize,HttpGet("Shop/Orders")]
   public IActionResult Orders(string status,int page=1){

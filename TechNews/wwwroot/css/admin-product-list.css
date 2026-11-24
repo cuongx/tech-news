@@ -1,0 +1,7 @@
+.admin-product-name { display: flex; align-items: center; gap: 14px; min-width: 240px; }
+.admin-product-name > a { color: #17263e; font-weight: 600; }
+.admin-product-name > a:hover { color: #0866ff; }
+.admin-product-thumbnail { width: 68px; height: 68px; flex-shrink: 0; display: grid; place-items: center; padding: 2px; border: 1px solid #e2e8f0; border-radius: 6px; background: #f8fafc; }
+.studio-admin .table td .admin-product-thumbnail img { width: 64px; height: 64px; object-fit: contain; border-radius: 4px; }
+.admin-product-image-fallback { font-size: 11px; color: #64748b; text-align: center; line-height: 1.5; }
+.admin-product-thumbnail [hidden] { display: none !important; }

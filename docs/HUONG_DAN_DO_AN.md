@@ -90,3 +90,11 @@ Không dùng số đơn thử làm doanh thu thật. Các sản phẩm gắn [M�
 - Dự án còn cảnh báo tương thích hai gói PagedList cũ. Chưa có kiểm thử tải, thanh toán online, vận chuyển, hoàn tiền sau giao hoặc đồng bộ giỏ hàng giữa thiết bị.
 - Khi được hỏi vì sao chọn transaction, rowversion hoặc token, giải thích vấn đề cụ thể mà chúng giải quyết; có thể mở bài kiểm thử tương ứng để minh họa.
 - Nêu đúng phần đã tự triển khai, phần dùng thư viện và phần có công cụ hỗ trợ theo yêu cầu của trường. Không cần khẳng định một chức năng đã làm nếu chưa kiểm chứng.
+
+## Hồ sơ hoàn thiện 24/11/2026
+
+Tên đề tài thống nhất: “Xây dựng website tin tức công nghệ kết hợp thương mại điện tử”. Dùng bộ Baocao-IT43-Nhom7-HoanChinh, SRS-TechNews-HoanChinh và SDD-TechNews-HoanChinh để trình bày bản hiện tại; tài liệu không có hậu tố vẫn là hồ sơ đợt 1.
+
+Form sản phẩm có mục chọn ảnh thư viện. Có thể mở /Admin/Assets để tải ảnh, sao chép đường dẫn rồi dán vào form; ảnh đang dùng bởi sản phẩm không xóa được. Không có thay đổi schema ở đợt này.
+
+Bộ kiểm thử bổ sung product-assets.cjs kiểm tra liên kết ảnh, quyền, CSRF, đường dẫn sai và chống xóa ảnh đang dùng. Kết quả 9 bộ tích hợp và ảnh trình duyệt nằm ở docs/bao-cao-20261124. Chỉ dùng tài khoản QA trên database thử.

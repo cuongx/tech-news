@@ -1,0 +1,72 @@
+﻿[
+    {
+        "suite":  "stability",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:11.1957053+07:00",
+        "seconds":  2.69,
+        "log":  "stability.log"
+    },
+    {
+        "suite":  "features",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:14.0047036+07:00",
+        "seconds":  27.98,
+        "log":  "features.log"
+    },
+    {
+        "suite":  "accounts-assets",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:41.9862368+07:00",
+        "seconds":  1.66,
+        "log":  "accounts-assets.log"
+    },
+    {
+        "suite":  "commerce",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:43.6482319+07:00",
+        "seconds":  5.66,
+        "log":  "commerce.log"
+    },
+    {
+        "suite":  "cart",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:49.3135052+07:00",
+        "seconds":  0.69,
+        "log":  "cart.log"
+    },
+    {
+        "suite":  "orders",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:50.0114537+07:00",
+        "seconds":  6.48,
+        "log":  "orders.log"
+    },
+    {
+        "suite":  "admin-orders",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:21:56.4942423+07:00",
+        "seconds":  3.59,
+        "log":  "admin-orders.log"
+    },
+    {
+        "suite":  "account-lists",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:22:00.0902854+07:00",
+        "seconds":  1.75,
+        "log":  "account-lists.log"
+    },
+    {
+        "suite":  "product-assets",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:22:01.8462490+07:00",
+        "seconds":  1.36,
+        "log":  "product-assets.log"
+    },
+    {
+        "suite":  "shipping-address",
+        "exitCode":  0,
+        "started":  "2026-11-25T00:24:51.7493443+07:00",
+        "seconds":  null,
+        "log":  "shipping-address.log"
+    }
+]

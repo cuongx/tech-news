@@ -1,0 +1,15 @@
+@model OrderAddressInput
+@{ViewData["Title"]=$"Sửa địa chỉ đơn #{Model.OrderId}";}
+<section class="shop-shell container">
+ <a href="/Shop/Orders/@Model.OrderId">← Quay lại đơn hàng</a>
+ <h1>Sửa địa chỉ nhận hàng</h1>
+ <p>Đơn #@Model.OrderId · Bạn chỉ có thể sửa khi đơn còn chờ xác nhận.</p>
+ <p><strong>Địa chỉ hiện tại:</strong> @ViewBag.PreviousAddress</p>
+ <form method="post" action="/Shop/Orders/@Model.OrderId/Address" class="shop-form" style="max-width:760px">
+  @Html.AntiForgeryToken()<input asp-for="Version" type="hidden" />
+  <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+  <partial name="_ShippingAddress" model="Model" />
+  <div class="checkout-actions"><a href="/Shop/Orders/@Model.OrderId" class="shop-button secondary">Hủy thay đổi</a><button class="shop-button" type="submit">Lưu địa chỉ</button></div>
+  <a href="/Shop/Orders/@Model.OrderId/Address">Tải lại địa chỉ mới nhất</a>
+ </form>
+</section>

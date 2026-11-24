@@ -1,0 +1,17 @@
+{
+  "passed": true,
+  "widths": [
+    375,
+    768,
+    1440
+  ],
+  "checks": [
+    "cascade",
+    "review/reset",
+    "canonical address",
+    "edit preselection",
+    "HTML encoding",
+    "no-JavaScript edit"
+  ],
+  "errors": []
+}

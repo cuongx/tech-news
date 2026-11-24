@@ -23,8 +23,8 @@ namespace TechNews.Services
             if (db.Users.Any(u => u.Id != user.Id && (u.UserLogin == user.UserLogin || u.UserEmail == user.UserEmail || u.UserLogin == user.UserEmail || u.UserEmail == user.UserLogin)))
                 return "Tên đăng nhập hoặc email đã được sử dụng.";
             if (!profile && user.UserRole != "Admin" && user.UserRole != "Editor" && user.UserRole != "Reader") return "Vai trò không hợp lệ.";
-            if ((passwordRequired || !string.IsNullOrEmpty(user.UserPassword)) && (user.UserPassword == null || user.UserPassword.Length < 8 || user.UserPassword.Length > 128))
-                return "Mật khẩu cần từ 8 đến 128 ký tự.";
+            if ((passwordRequired || !string.IsNullOrEmpty(user.UserPassword)) && (user.UserPassword == null || user.UserPassword.Length < 1 || user.UserPassword.Length > 128))
+                return "Mật khẩu không được để trống và tối đa 128 ký tự.";
             return null;
         }
         public void CreateUser(User user) { user.UserPassword = hasher.HashPassword(user,user.UserPassword); db.Users.Add(user); db.SaveChanges(); }

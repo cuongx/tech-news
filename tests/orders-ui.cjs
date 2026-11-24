@@ -14,7 +14,7 @@ try {
  await go(productPath,'.product-detail-add');await js(`document.querySelector('.product-detail-add').click()`);
  await waitFor(`document.querySelector('[data-cart-count]').textContent==='1'`);
  await go('/Shop/Checkout','#checkout-submit');
- await js(`var f=document.getElementById('checkout-form');f.elements.Recipient.value='Khách kiểm thử';f.elements.Phone.value='0901234567';f.elements.Address.value='123 Nguyễn Văn Linh, Đà Nẵng';f.elements.Note.value='<script>test</script>';document.getElementById('checkout-submit').click()`);
+ await js(`var f=document.getElementById('checkout-form');f.elements.Recipient.value='Khách kiểm thử';f.elements.Phone.value='0901234567';f.elements.ProvinceCode.value='1';f.elements.ProvinceCode.dispatchEvent(new Event('change',{bubbles:true}));f.elements.WardCode.value='4';f.elements.Address.value='123 Nguyễn Văn Linh, Đà Nẵng';f.elements.Note.value='<script>test</script>';document.getElementById('checkout-submit').click()`);
  assert.equal(await js(`location.pathname`),'/Shop/Checkout');
  assert.equal(await js(`document.getElementById('checkout-review').hidden`),false);
  assert.equal(await js(`document.getElementById('checkout-note').textContent`),'Ghi chú: <script>test</script>');

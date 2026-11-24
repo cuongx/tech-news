@@ -1,6 +1,6 @@
 # TechNews
 
-Website tin tức công nghệ viết bằng ASP.NET Core MVC và SQL Server.
+Website tin tức công nghệ kết hợp thương mại điện tử COD, viết bằng ASP.NET Core MVC và SQL Server.
 Giao diện đọc tin tham khảo cách tổ chức nội dung của trang Công nghệ Znews,
 sử dụng thương hiệu và tài nguyên giao diện TechNews.
 
@@ -135,7 +135,7 @@ sqlcmd -S localhost -E -C -d BLOGDB -b -f 65001 -i UpgradeFeatures.sql
 Các script trong `tests/` chỉ chạy với database bản sao và ba tài khoản thử `qa-admin`, `qa-editor1`, `qa-editor2`. Mật khẩu fixture chỉ dành cho database thử; có thể đặt biến `TEST_PASSWORD`. Không tạo các tài khoản thử trên BLOGDB đang dùng.
 
 ```powershell
-dotnet build TechNews.sln --no-restore -p:OutputPath=bin/Verification/
+dotnet build TechNews/TechNews.csproj --no-restore -o TechNews/bin/Verification
 powershell -File tests/Run-Verification.ps1 -Database TechNews_Verification_20261025
 ```
 
@@ -195,3 +195,31 @@ Trang tài khoản phía khách dùng menu hồ sơ, đơn hàng, bài lưu và 
 - Form sản phẩm tách thông tin và ảnh; xem trước ảnh, thông báo ảnh lỗi, hướng dẫn giá/tồn kho và lỗi bắt buộc bằng tiếng Việt. Không thêm chức năng upload hoặc thay đổi schema.
 - Thông báo chung admin dùng nhãn trung tính “Thông báo”, mã hóa chuỗi khi đưa vào JavaScript; lỗi form hiển thị tại form.
 - `tests/account-lists.cjs` bổ sung kiểm tra trạng thái trống, quyền sở hữu, CSRF, HTML trong bình luận, email trùng và dữ liệu sản phẩm không hợp lệ. Chạy cùng quy tắc TEST_URL/TEST_DATABASE và database riêng như các bộ test hiện có.
+
+## Bản hoàn thiện 24/11/2026
+
+Tên đề tài: **Xây dựng website tin tức công nghệ kết hợp thương mại điện tử**.
+
+- Form sản phẩm chọn được ảnh từ thư viện dùng chung, xem trước ảnh /uploads; server chỉ nhận đường dẫn tải lên có trong Assets.
+- Không xóa ảnh còn được bài viết hoặc sản phẩm (kể cả ngừng bán) sử dụng.
+- Khôi phục tài nguyên tĩnh thiếu từ bản Git sạch; phục vụ Summernote 0.8.18 từ wwwroot/vendor/summernote, có license, để trình soạn bài không phụ thuộc CDN.
+- Không thay đổi schema/database nghiệp vụ trong đợt này; không cần script SQL nâng cấp mới.
+- Runner tests/Run-Verification.ps1 chạy 9 bộ tích hợp, đồng bộ TEST_DATABASE với connection string, kiểm tra cổng, ghi log/results.json. Cần database kiểm thử đã có schema và fixture QA như hướng dẫn trên; runner không tự tạo fixture.
+- Minh chứng và nguồn tạo báo cáo: docs/bao-cao-20261124. Báo cáo chính, SRS, SDD Word/PDF bản HoanChinh nằm cạnh các tài liệu đợt 1 trong thư mục nhóm.
+- Build đạt, còn hai cảnh báo NU1701; chưa nâng cấp các phụ thuộc cũ, kiểm thử tải hoặc triển khai thanh toán/vận chuyển thực tế.
+
+## Cập nhật địa chỉ nhận hàng — 25/11/2026
+
+- Thanh toán bắt buộc chọn tỉnh/thành, phường/xã và nhập địa chỉ chi tiết (5–300 ký tự). Server kiểm tra phường/xã thuộc tỉnh và tự ghép tên chính thức; đổi tỉnh phải chọn lại phường/xã.
+- Khách vào Đơn hàng → Chi tiết → Sửa địa chỉ nhận hàng. Chỉ chủ đơn được sửa khi trạng thái Pending (chờ xác nhận). Đơn đã xác nhận/giao/hoàn tất/hủy bị khóa sửa địa chỉ, kể cả gửi yêu cầu trực tiếp.
+- Lưu lịch sử địa chỉ trước/sau; kiểm tra rowversion và giao dịch để tránh ghi đè khi quản trị xử lý đơn cùng lúc. Không đổi tiền hàng, sản phẩm, tồn kho hay người nhận.
+- Chạy `UpgradeShippingAddress.sql` sau `UpgradeCommerce.sql` và `UpgradeOrderHistory.sql`. Script thêm cột nullable, chạy lại an toàn; giữ địa chỉ văn bản của đơn cũ. Khi sửa đơn cũ, khách chọn lại tỉnh/phường và nhập chi tiết.
+- Danh mục địa phương lưu tại `TechNews/Data/vietnam-addresses.json`, nguồn và ngày lấy trong file cùng thư mục. Checkout không phụ thuộc API bên ngoài. Danh mục đúng không chứng minh số nhà/tên đường tồn tại; cửa hàng cần liên hệ khách để xác nhận khi có nghi vấn.
+- `tests/Run-Verification.ps1` hiện có 10 bộ tích hợp. `tests/shipping-address-ui.cjs` dùng Playwright/Edge, TEST_URL, TEST_DATABASE và TEST_ARTIFACTS để kiểm tra giao diện; chỉ dùng database kiểm thử. Minh chứng đợt này: `docs/kiem-thu-dia-chi-20261125`.
+- BLOGDB đã được sao lưu COPY_ONLY/CHECKSUM trước nâng cấp. Bản chạy hiện tại: http://localhost:5199 (không dùng bản IIS Express cũ ở cổng 44387).
+
+## Tài liệu bàn giao và cập nhật mật khẩu
+
+Bộ báo cáo Word/PDF đã bổ sung chức năng địa chỉ nhận hàng nằm tại [docs/bao-cao-hoan-chinh](docs/bao-cao-hoan-chinh): báo cáo chính, SRS và SDD. Đề tài: **Xây dựng website tin tức công nghệ kết hợp thương mại điện tử**.
+
+Theo yêu cầu cập nhật, đăng ký và đổi mật khẩu không còn bắt buộc tối thiểu 8 ký tự; vẫn bắt buộc nhập và tối đa 128 ký tự. Mật khẩu tiếp tục được băm khi lưu. Không đổi mật khẩu của tài khoản hiện có, không cần migration SQL. `tests/password-length.cjs` kiểm tra đăng ký mật khẩu ngắn, hai luồng đổi mật khẩu, đăng nhập và từ chối mật khẩu rỗng/quá dài trên database kiểm thử; đã chạy đạt cùng `accounts-assets`.

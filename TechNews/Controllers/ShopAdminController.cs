@@ -16,19 +16,33 @@ namespace TechNews.Controllers
         [HttpGet("Admin/Products")]
         public IActionResult Products(string q, int page = 1) { var query = db.Products.AsNoTracking(); if (!string.IsNullOrWhiteSpace(q)) query = query.Where(p => p.Name.Contains(q)); ViewBag.Q = q; ViewBag.Pages = Math.Max(1, (int)Math.Ceiling(query.Count() / 30d)); ViewBag.Page = Math.Clamp(page, 1, (int)ViewBag.Pages); return View(query.OrderByDescending(p => p.Id).Skip(((int)ViewBag.Page - 1) * 30).Take(30).ToList()); }
         [HttpGet("Admin/Products/Create")]
-        public IActionResult Create() => View("Edit", new Product());
+        public IActionResult Create() => ProductEditor(new Product());
         [HttpGet("Admin/Products/{id:int}/Edit")]
-        public IActionResult Edit(int id) { var p = db.Products.AsNoTracking().FirstOrDefault(x => x.Id == id); return p == null ? NotFound() : View(p); }
+        public IActionResult Edit(int id) { var p = db.Products.AsNoTracking().FirstOrDefault(x => x.Id == id); return p == null ? NotFound() : ProductEditor(p); }
+        private ViewResult ProductEditor(Product product)
+        {
+            ViewBag.ProductAssets = db.Assets.AsNoTracking().OrderByDescending(a => a.Id).ToList();
+            return View("Edit", product);
+        }
+        private bool ValidImage(string value)
+        {
+            if (string.IsNullOrEmpty(value)) return true;
+            if (value.StartsWith("/uploads/", StringComparison.Ordinal))
+                return db.Assets.Any(a => a.Url == value);
+            if (value.StartsWith("/images/", StringComparison.Ordinal))
+                return !value.Contains("\\") && !value.Contains("..") && !value.Contains("%") && !value.Contains("?") && !value.Contains("#");
+            return Uri.TryCreate(value, UriKind.Absolute, out var uri) && uri.Scheme == "https";
+        }
         [HttpPost("Admin/Products/Save")]
         public IActionResult Save([Bind("Id,Name,Category,Description,ImageUrl,Price,Stock,IsActive,Version")] Product input)
         {
             input.Name = input.Name?.Trim(); input.Category = input.Category?.Trim(); input.ImageUrl = input.ImageUrl?.Trim();
-            if (!string.IsNullOrEmpty(input.ImageUrl) && !(input.ImageUrl.StartsWith("/images/", StringComparison.Ordinal) && !input.ImageUrl.Contains("\\")) && !(Uri.TryCreate(input.ImageUrl, UriKind.Absolute, out var uri) && uri.Scheme == "https")) ModelState.AddModelError("ImageUrl", "Dùng đường dẫn /images/... hoặc URL ảnh HTTPS.");
+            if (!ValidImage(input.ImageUrl)) ModelState.AddModelError("ImageUrl", "Chọn ảnh đã tải lên thư viện, đường dẫn /images/... hoặc URL ảnh HTTPS.");
             if (input.Price != decimal.Truncate(input.Price)) ModelState.AddModelError("Price", "Giá bán phải là số nguyên đồng.");
-            if (!ModelState.IsValid) return View("Edit", input);
+            if (!ModelState.IsValid) return ProductEditor(input);
             if (input.Id == 0) { input.Version = null; db.Products.Add(input); }
             else { var p = db.Products.Find(input.Id); if (p == null) return NotFound(); if (input.Version == null) return BadRequest(); db.Entry(p).Property(x => x.Version).OriginalValue = input.Version; p.Name = input.Name; p.Category = input.Category; p.Description = input.Description; p.ImageUrl = input.ImageUrl; p.Price = input.Price; p.Stock = input.Stock; p.IsActive = input.IsActive; }
-            try { db.SaveChanges(); } catch (DbUpdateConcurrencyException) { ModelState.AddModelError("", "Sản phẩm đã thay đổi (có thể vừa có đơn hàng). Mở lại trang để lấy tồn kho mới."); return View("Edit", input); }
+            try { db.SaveChanges(); } catch (DbUpdateConcurrencyException) { ModelState.AddModelError("", "Sản phẩm đã thay đổi (có thể vừa có đơn hàng). Mở lại trang để lấy tồn kho mới."); return ProductEditor(input); }
             TempData["Message"] = "Đã lưu sản phẩm."; return RedirectToAction(nameof(Products));
         }
         [HttpGet("Admin/ShopOrders")]

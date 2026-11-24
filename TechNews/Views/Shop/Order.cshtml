@@ -6,6 +6,7 @@
   <div class="order-success" role="status"><strong>Đặt hàng thành công!</strong><p>Mã đơn #@Model.Id. Cửa hàng sẽ xác nhận và chuẩn bị giao hàng. Bạn thanh toán khi nhận hàng.</p></div>
  }
  <h1>Đơn hàng #@Model.Id</h1><partial name="_ShopOrder" model="Model" />
+ @if(Model.Status=="Pending"){<p><a class="shop-button secondary" href="/Shop/Orders/@Model.Id/Address">Sửa địa chỉ nhận hàng</a><small class="shop-muted"> Chỉ áp dụng trước khi cửa hàng xác nhận đơn.</small></p>}
  <partial name="_OrderHistory" model="Model" />
  @if(OrderStates.CanMove(Model.Status,"Cancelled")){
   <details class="order-cancel"><summary>Hủy đơn hàng</summary>

@@ -1,4 +1,4 @@
-﻿@model Product
+@model Product
 @{ViewData["Title"]=Model.Id==0?"Thêm sản phẩm":"Sửa sản phẩm";}
 <link rel="stylesheet" href="~/css/admin-products.css" asp-append-version="true" />
 <section class="shop-shell container-fluid product-editor">
@@ -14,7 +14,11 @@
     <label for="Description">Mô tả</label><textarea asp-for="Description" rows="6" maxlength="4000"></textarea>
     <label class="shop-check product-active"><input asp-for="IsActive" /> Đang bán trên website</label><small>Bỏ chọn để ngừng bán. Đơn hàng cũ giữ tên và giá tại lúc mua.</small>
    </section>
-   <section class="product-editor-panel"><h2>Ảnh sản phẩm</h2><label for="ImageUrl">Đường dẫn ảnh</label><input asp-for="ImageUrl" maxlength="500" placeholder="/images/products/phone.svg" aria-describedby="image-help" /><small id="image-help">Dùng đường dẫn /images/... hoặc URL HTTPS.</small><button type="button" id="preview-product-image" class="shop-button secondary" hidden>Xem trước ảnh</button>
+   <section class="product-editor-panel"><h2>Ảnh sản phẩm</h2>
+    <label for="product-asset">Chọn ảnh từ thư viện</label>
+    <select id="product-asset"><option value="">— Chọn ảnh đã tải lên —</option>@foreach (Asset asset in ViewBag.ProductAssets) { <option value="@asset.Url">@asset.FileName</option> }</select>
+    <small><a href="/Admin/Assets" target="_blank" rel="noopener">Mở thư viện để tải ảnh lên</a>. Sau khi tải ảnh, sao chép đường dẫn và dán vào ô bên dưới.</small>
+    <label for="ImageUrl">Đường dẫn ảnh</label><input asp-for="ImageUrl" maxlength="500" placeholder="/images/products/phone.svg" aria-describedby="image-help" /><small id="image-help">Chọn ảnh thư viện, đường dẫn /images/... hoặc URL HTTPS.</small><button type="button" id="preview-product-image" class="shop-button secondary" hidden>Xem trước ảnh</button>
     <div class="product-image-preview"><img id="product-image" alt="Ảnh xem trước của sản phẩm" hidden referrerpolicy="no-referrer" /><p id="product-image-status" role="status">Chưa xem trước ảnh.</p></div>
     <noscript><p>Xem trước ảnh cần JavaScript. Bạn vẫn có thể lưu sản phẩm.</p></noscript>
    </section>

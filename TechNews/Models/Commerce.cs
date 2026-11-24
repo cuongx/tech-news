@@ -22,6 +22,9 @@ namespace TechNews.Models {
   [Required,StringLength(100)] public string Recipient {get;set;}
   [Required,StringLength(20)] public string Phone {get;set;}
   [Required,StringLength(500)] public string Address {get;set;}
+  public int? ProvinceCode {get;set;}
+  public int? WardCode {get;set;}
+  [StringLength(300)] public string AddressLine {get;set;}
   [StringLength(1000)] public string Note {get;set;}
   [Required,StringLength(20)] public string Status {get;set;}="Pending";
   public DateTime CreatedUtc {get;set;}=DateTime.UtcNow;
@@ -36,6 +39,8 @@ namespace TechNews.Models {
   [Required,StringLength(20)] public string ActorRole {get;set;}
   public int? ActorId {get;set;}
   [StringLength(500)] public string Reason {get;set;}
+  [StringLength(500)] public string AddressBefore {get;set;}
+  [StringLength(500)] public string AddressAfter {get;set;}
   public DateTime CreatedUtc {get;set;}=DateTime.UtcNow;
  }
  public class ShopOrderItem {
@@ -44,11 +49,19 @@ namespace TechNews.Models {
   public int Quantity {get;set;}
   [Column(TypeName="decimal(18,0)")] public decimal UnitPrice {get;set;}
  }
- public class CheckoutInput {
+ public class ShippingAddressInput {
+  [Required(ErrorMessage="Chọn tỉnh/thành phố.")] public int? ProvinceCode {get;set;}
+  [Required(ErrorMessage="Chọn phường/xã.")] public int? WardCode {get;set;}
+  [Required(ErrorMessage="Nhập số nhà, tên đường hoặc thôn/xóm."),StringLength(300,MinimumLength=5,ErrorMessage="Địa chỉ chi tiết cần từ 5 đến 300 ký tự.")] public string Address {get;set;}
+ }
+ public class OrderAddressInput : ShippingAddressInput {
+  public int OrderId {get;set;}
+  [Required(ErrorMessage="Thiếu phiên bản đơn hàng. Hãy tải lại trang.")] public byte[] Version {get;set;}
+ }
+ public class CheckoutInput : ShippingAddressInput {
   public Guid Token {get;set;}
   [Required(ErrorMessage="Nhập tên người nhận."),StringLength(100)] public string Recipient {get;set;}
   [Required,StringLength(20),RegularExpression(@"\+?[0-9][0-9 .-]{8,18}[0-9]",ErrorMessage="Số điện thoại không hợp lệ.")] public string Phone {get;set;}
-  [Required(ErrorMessage="Nhập địa chỉ giao hàng."),StringLength(500)] public string Address {get;set;}
   [StringLength(1000)] public string Note {get;set;}
  }
  public class CartLine {public Product Product {get;set;} public int Quantity {get;set;} public decimal? PreviousPrice {get;set;} public bool PriceChanged=>PreviousPrice.HasValue&&PreviousPrice.Value!=Product.Price; public bool Unavailable=>!Product.IsActive||Quantity>Product.Stock||Product.Stock<1; public decimal Total=>Product.Price*Quantity;}

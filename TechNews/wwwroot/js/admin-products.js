@@ -9,8 +9,8 @@
   if(!value){status.textContent='Chưa có đường dẫn ảnh.';return;}
   let url;
   try{url=new URL(value,location.origin);}catch{status.textContent='Đường dẫn ảnh không hợp lệ.';return;}
-  const local=value.startsWith('/images/')&&!value.includes('\\')&&url.origin===location.origin&&url.pathname.startsWith('/images/');
-  if(!local&&!(value.startsWith('https://')&&url.protocol==='https:')){status.textContent='Dùng đường dẫn /images/... hoặc URL HTTPS.';return;}
+  const local=['/images/','/uploads/'].some(prefix=>value.startsWith(prefix)&&url.pathname.startsWith(prefix))&&!value.includes('\\')&&url.origin===location.origin;
+  if(!local&&!(value.startsWith('https://')&&url.protocol==='https:')){status.textContent='Chọn ảnh thư viện, đường dẫn /images/... hoặc URL HTTPS.';return;}
   status.textContent='Đang tải ảnh…';
   const probe=new Image();probe.referrerPolicy='no-referrer';
   probe.onload=()=>{if(current!==revision)return;image.src=url.href;image.hidden=false;status.textContent='Ảnh xem trước';};
@@ -18,6 +18,7 @@
   probe.src=url.href;
  }
  button.addEventListener('click',preview);
+ document.getElementById('product-asset').addEventListener('change',event=>{if(event.target.value){input.value=event.target.value;preview();}});
  input.addEventListener('input',()=>{revision++;image.hidden=true;image.removeAttribute('src');status.textContent='Nhấn Xem trước ảnh để kiểm tra đường dẫn mới.';});
  if(input.value.trim())preview();
 })();

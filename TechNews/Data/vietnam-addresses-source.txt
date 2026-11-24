@@ -1,0 +1,4 @@
+Source: https://provinces.open-api.vn/api/v2/?depth=2
+Retrieved: 2026-11-25
+Snapshot: 34 provinces/cities, 3321 wards/communes. Two-tier administrative structure.
+Used locally without runtime API calls. Administrative membership does not verify house/street existence or delivery availability.

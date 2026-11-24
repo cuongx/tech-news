@@ -1,4 +1,4 @@
-﻿@model TechNews.Models.User
+@model TechNews.Models.User
 @{
  Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
  ViewData["Title"] = "Hồ sơ cá nhân";
@@ -46,7 +46,7 @@
       @if(!string.IsNullOrEmpty(passwordError)){<div class="profile-notice error" role="alert"><i class="fas fa-exclamation-circle" aria-hidden="true"></i><span>@passwordError</span></div>}
       <div class="profile-fields">
        <div class="profile-field full"><label for="oldPassword">Mật khẩu hiện tại</label><div class="profile-password-input"><input type="password" id="oldPassword" name="oldPassword" required autocomplete="current-password" /><button type="button" class="profile-reveal" data-password="oldPassword" aria-label="Hiện mật khẩu hiện tại" aria-pressed="false" hidden><i class="far fa-eye" aria-hidden="true"></i></button></div></div>
-       <div class="profile-field full"><label for="newPassword">Mật khẩu mới</label><div class="profile-password-input"><input type="password" id="newPassword" name="newPassword" required minlength="8" maxlength="128" autocomplete="new-password" aria-describedby="password-help" /><button type="button" class="profile-reveal" data-password="newPassword" aria-label="Hiện mật khẩu mới" aria-pressed="false" hidden><i class="far fa-eye" aria-hidden="true"></i></button></div><small id="password-help">Từ 8–128 ký tự. Nên kết hợp chữ, số và ký tự đặc biệt.</small></div>
+       <div class="profile-field full"><label for="newPassword">Mật khẩu mới</label><div class="profile-password-input"><input type="password" id="newPassword" name="newPassword" required maxlength="128" autocomplete="new-password" aria-describedby="password-help" /><button type="button" class="profile-reveal" data-password="newPassword" aria-label="Hiện mật khẩu mới" aria-pressed="false" hidden><i class="far fa-eye" aria-hidden="true"></i></button></div><small id="password-help">Không để trống, tối đa 128 ký tự. Nên kết hợp chữ, số và ký tự đặc biệt.</small></div>
       </div>
       <div class="profile-password-actions"><button type="reset" class="profile-button secondary">Xóa nội dung</button><button type="submit" class="profile-button"><i class="fas fa-check" aria-hidden="true"></i> Cập nhật mật khẩu</button></div>
      </form>
