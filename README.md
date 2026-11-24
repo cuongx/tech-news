@@ -223,3 +223,11 @@ Tên đề tài: **Xây dựng website tin tức công nghệ kết hợp thươ
 Bộ báo cáo Word/PDF đã bổ sung chức năng địa chỉ nhận hàng nằm tại [docs/bao-cao-hoan-chinh](docs/bao-cao-hoan-chinh): báo cáo chính, SRS và SDD. Đề tài: **Xây dựng website tin tức công nghệ kết hợp thương mại điện tử**.
 
 Theo yêu cầu cập nhật, đăng ký và đổi mật khẩu không còn bắt buộc tối thiểu 8 ký tự; vẫn bắt buộc nhập và tối đa 128 ký tự. Mật khẩu tiếp tục được băm khi lưu. Không đổi mật khẩu của tài khoản hiện có, không cần migration SQL. `tests/password-length.cjs` kiểm tra đăng ký mật khẩu ngắn, hai luồng đổi mật khẩu, đăng nhập và từ chối mật khẩu rỗng/quá dài trên database kiểm thử; đã chạy đạt cùng `accounts-assets`.
+
+## Ảnh và thông số sản phẩm thật — 25/11/2026
+
+Sáu sản phẩm mẫu đã được thay bằng iPhone 16 128 GB, AirPods 4, Sony WH-CH520, MacBook Air M2, Xiaomi Smart Band 9 và iPad Gen 10. Ảnh được tải về `TechNews/wwwroot/images/products/official`; không phụ thuộc việc tải ảnh từ website hãng lúc khách mở trang.
+
+Máy có dữ liệu mẫu cũ: chạy `UpdateDemoCatalog.sql`, sau đó `sqlcmd -S localhost -E -C -b -f 65001 -d BLOGDB -i UpdateRealProductCatalog.sql`. Script chỉ cập nhật tên, danh mục, mô tả và ảnh của sản phẩm còn khớp tên/ảnh mẫu; giữ ID, giá, tồn kho, trạng thái bán và dữ liệu chi tiết đơn cũ. Không tự thêm hoặc ghi đè sản phẩm đã biên tập.
+
+Nguồn thông số, ảnh, ngày tải, mã kiểm tra file và ảnh kiểm chứng giao diện nằm trong [docs/product-catalog-20261125](docs/product-catalog-20261125). Giá/tồn kho giữ theo dữ liệu đồ án đang có, không lấy từ website hãng. `tests/real-product-catalog.sql` kiểm tra cập nhật, chạy lại và giữ nguyên dữ liệu giao dịch trong database kiểm thử rồi rollback.
