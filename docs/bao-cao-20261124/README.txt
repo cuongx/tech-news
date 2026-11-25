@@ -15,7 +15,7 @@ Mở Word, cập nhật toàn bộ trường/mục lục và xuất PDF. Trong p
 
 CHỤP LẠI GIAO DIỆN
 Cài npm install trong thư mục này, máy cần Microsoft Edge.
-Server phải trỏ tới database QA có tài khoản fixture và các sản phẩm [MẪU].
+Server phải trỏ tới database QA có tài khoản fixture và sáu sản phẩm thật sau UpdateRealProductCatalog.sql. Trước khi chụp, chỉ bật IsActive cho sáu sản phẩm này trên QA; không sửa trạng thái bán của BLOGDB.
 Đặt TEST_DATABASE và TEST_URL tương ứng server, rồi npm run capture.
 Script thực hiện đặt một đơn minh họa, chỉ dùng dữ liệu kiểm thử. Có thể đặt TEST_PASSWORD cho tài khoản QA.
 
@@ -23,3 +23,5 @@ THAM CHIẾU
 Bản chính: D:\IT43 - NHOM 7.029\Website\tech-news.
 Các Word/PDF bản bàn giao: D:\IT43 - NHOM 7.029\*HoanChinh.*.
 Không có thay đổi schema BLOGDB trong đợt hoàn thiện này.
+
+Cập nhật 25/11/2026: chụp lại 16 hình giao diện với sản phẩm thật, gồm giỏ iPhone/AirPods, thanh toán, đơn khách, quản trị đơn/sản phẩm và form sửa địa chỉ.
