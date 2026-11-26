@@ -1,6 +1,6 @@
-﻿param(
+param(
  [string]$Server='localhost',
- [ValidatePattern('^[A-Za-z][A-Za-z0-9_]{0,80}$')][string]$Database='TechNewsDemo',
+ [ValidatePattern('^[A-Za-z][A-Za-z0-9_]{0,80}$')][string]$Database='TechNews',
  [ValidateRange(1024,65535)][int]$Port=5199
 )
 $ErrorActionPreference='Stop'

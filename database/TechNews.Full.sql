@@ -1,7 +1,7 @@
 ﻿:ON ERROR EXIT
 USE [master];
 GO
-IF DB_ID(N'TechNewsDemo') IS NOT NULL THROW 51000,'Database already exists. Choose a NEW database name; existing data is never overwritten.',1;
+IF DB_ID(N'TechNews') IS NOT NULL THROW 51000,'Database already exists. Choose a NEW database name; existing data is never overwritten.',1;
 GO
 
 GO
@@ -10,16 +10,16 @@ GO
 -- Run in SQL Server Management Studio or sqlcmd.
 USE [master];
 GO
-IF DB_ID(N'TechNewsDemo') IS NULL CREATE DATABASE [TechNewsDemo];
+IF DB_ID(N'TechNews') IS NULL CREATE DATABASE [TechNews];
 GO
-USE [TechNewsDemo];
+USE [TechNews];
 GO
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
 IF OBJECT_ID(N'dbo.article', N'U') IS NOT NULL
    OR OBJECT_ID(N'dbo.category', N'U') IS NOT NULL
    OR OBJECT_ID(N'dbo.user', N'U') IS NOT NULL
-    THROW 51000, 'TechNewsDemo already contains application tables. No changes applied.', 1;
+    THROW 51000, 'TechNews already contains application tables. No changes applied.', 1;
 
 CREATE TABLE dbo.[user] (
     id int IDENTITY(1,1) NOT NULL PRIMARY KEY,
@@ -82,7 +82,7 @@ GO
 GO
 -- SOURCE: SeedTechnology.sql
 
-USE [TechNewsDemo];
+USE [TechNews];
 GO
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;
@@ -160,7 +160,7 @@ GO
 GO
 -- SOURCE: UpdateTechnologyCategories.sql
 
-USE [TechNewsDemo];
+USE [TechNews];
 GO
 SET XACT_ABORT ON;
 BEGIN TRANSACTION;

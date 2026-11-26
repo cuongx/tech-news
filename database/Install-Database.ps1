@@ -1,10 +1,10 @@
-﻿param(
+param(
  [string]$Server='localhost',
- [ValidatePattern('^[A-Za-z][A-Za-z0-9_]{0,80}$')][string]$Database='TechNewsDemo'
+ [ValidatePattern('^[A-Za-z][A-Za-z0-9_]{0,80}$')][string]$Database='TechNews'
 )
 $ErrorActionPreference='Stop'
 if(!(Get-Command sqlcmd -ErrorAction SilentlyContinue)){throw 'Install SQL Server command-line utilities (sqlcmd), or open database/TechNews.Full.sql in SSMS with SQLCMD Mode enabled.'}
-$sql=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'TechNews.Full.sql')).Replace('TechNewsDemo',$Database)
+$sql=[IO.File]::ReadAllText((Join-Path $PSScriptRoot 'TechNews.Full.sql')).Replace('[TechNews]',('['+$Database+']')).Replace("N'TechNews'",("N'"+$Database+"'"))
 $temp=Join-Path ([IO.Path]::GetTempPath()) ('technews-install-'+[Guid]::NewGuid().ToString('N')+'.sql')
 try {
  [IO.File]::WriteAllText($temp,$sql,(New-Object Text.UTF8Encoding($true)))

@@ -1,37 +1,38 @@
 {
-  "date": "2026-11-26",
-  "sqlServerMajorVersion": 16,
-  "initialDemo": {
-    "tables": 14,
-    "articles": 17,
-    "products": 6,
-    "accounts": 2,
-    "orders": 0
-  },
-  "checks": {
-    "freshSqlInstall": "passed",
-    "schemaComparisonWithApplicationDatabase": "passed",
-    "backupVerifyWithChecksum": "passed",
-    "restoreToSeparateDatabase": "passed",
-    "freshSqlHttpSmoke": "passed",
-    "restoredDatabaseHttpSmoke": "passed",
-    "existingDatabaseRefused": "passed"
-  },
-  "httpCoverage": [
-    "admin and customer login",
-    "news and shop pages",
-    "admin articles products orders assets",
-    "six product pages and local images",
-    "checkout",
-    "customer order history",
-    "admin order details"
-  ],
-  "buildWarnings": [
-    "NU1701 PagedList",
-    "NU1701 PagedList.Mvc"
-  ],
-  "sha256": {
-    "sql": "8b4c7442fa714986d3d3e1b3452b2bdfc1291d74ace87601a39b948900869459",
-    "backup": "6b717d1115c9be448a3675e5984d1ea4bd1281ca63358c1d966663c217816d65"
-  }
+    "date":  "2026-11-26",
+    "sqlServerMajorVersion":  16,
+    "initialDemo":  {
+                        "tables":  14,
+                        "articles":  17,
+                        "products":  6,
+                        "accounts":  2,
+                        "orders":  0
+                    },
+    "checks":  {
+                   "freshSqlInstall":  "passed",
+                   "schemaComparisonWithApplicationDatabase":  "passed",
+                   "backupVerifyWithChecksum":  "passed",
+                   "restoreToSeparateDatabase":  "passed",
+                   "freshSqlHttpSmoke":  "passed",
+                   "restoredDatabaseHttpSmoke":  "passed",
+                   "existingDatabaseRefused":  "passed"
+               },
+    "httpCoverage":  [
+                         "admin and customer login",
+                         "news and shop pages",
+                         "admin articles products orders assets",
+                         "six product pages and local images",
+                         "checkout",
+                         "customer order history",
+                         "admin order details"
+                     ],
+    "buildWarnings":  [
+                          "NU1701 PagedList",
+                          "NU1701 PagedList.Mvc"
+                      ],
+    "sha256":  {
+                   "sql":  "0ae8e0698448ab81fe596d0fa1c1b3987e7c9030e2afd8fb3490931d6c6a6148",
+                   "backup":  "6b717d1115c9be448a3675e5984d1ea4bd1281ca63358c1d966663c217816d65"
+               },
+    "namingUpdate":  "2026-11-27: default database renamed to TechNews; backup contents unchanged; PowerShell syntax checked."
 }

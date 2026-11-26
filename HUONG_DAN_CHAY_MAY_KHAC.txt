@@ -4,7 +4,7 @@ TECHNEWS — BỘ BÀN GIAO CHẠY TRÊN MÁY KHÁC (26/11/2026)
 1. BỘ NÀY CÓ GÌ?
 - Source TechNews, ảnh bài viết minh họa và 6 sản phẩm thật được lưu trong wwwroot.
 - database/TechNews.Full.sql: toàn bộ schema và dữ liệu demo, không cần chạy các Upgrade/Seed rời.
-- database/TechNewsDemo.bak: bản sao lưu SQL Server 2022, được lưu cùng source trên GitHub.
+- database/TechNews.bak: bản sao lưu SQL Server 2022, được lưu cùng source trên GitHub.
 - database/Install-Database.ps1: tạo database mới, tự dừng nếu tên database đã tồn tại.
 - Run-TechNews.ps1: chọn SQL Server/database và khởi chạy ứng dụng.
 - Báo cáo Word/PDF: docs/bao-cao-hoan-chinh.
@@ -22,30 +22,30 @@ Mở PowerShell tại thư mục có TechNews.sln và Run-TechNews.ps1.
 3. CÁCH CÀI KHUYẾN NGHỊ (CHỈ HAI LỆNH)
 Ví dụ máy dùng SQL Server mặc định localhost:
 
-powershell -NoProfile -ExecutionPolicy Bypass -File .\database\Install-Database.ps1 -Server "localhost" -Database "TechNewsDemo"
-powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-TechNews.ps1 -Server "localhost" -Database "TechNewsDemo" -Port 5199
+powershell -NoProfile -ExecutionPolicy Bypass -File .\database\Install-Database.ps1 -Server "localhost" -Database "TechNews"
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-TechNews.ps1 -Server "localhost" -Database "TechNews" -Port 5199
 
 Mở http://localhost:5199
 Giữ cửa sổ chạy ứng dụng mở; Ctrl+C để dừng.
 Nếu máy dùng SQLEXPRESS, thay Server ở CẢ HAI lệnh thành ".\SQLEXPRESS".
 Nếu cổng 5199 đang được dùng, đổi -Port 5200 và mở http://localhost:5200.
-Script dùng Windows Authentication. Tài khoản Windows phải có quyền tạo database và kết nối SQL Server. Database mặc định của bộ bàn giao là TechNewsDemo; script chạy tự cấu hình connection string bằng biến môi trường, không cần sửa appsettings.json.
-Tên database đã tồn tại: không chạy lại vào database có dữ liệu; dùng tên mới, ví dụ TechNewsDemo2, trong CẢ HAI lệnh. Không tự xóa database cũ.
+Script dùng Windows Authentication. Tài khoản Windows phải có quyền tạo database và kết nối SQL Server. Database mặc định của bộ bàn giao là TechNews; script chạy tự cấu hình connection string bằng biến môi trường, không cần sửa appsettings.json.
+Tên database đã tồn tại: không chạy lại vào database có dữ liệu; dùng tên mới, ví dụ TechNews2, trong CẢ HAI lệnh. Không tự xóa database cũ.
 
 4. NẾU CHƯA CÓ SQLCMD: DÙNG SSMS
 - Kết nối SQL Server bằng Windows Authentication.
 - File > Open > File, mở database/TechNews.Full.sql.
 - Query > SQLCMD Mode (bắt buộc vì file có :ON ERROR EXIT).
-- Execute (F5); file tạo database TechNewsDemo, toàn bộ bảng và dữ liệu demo.
+- Execute (F5); file tạo database TechNews, toàn bộ bảng và dữ liệu demo.
 - Chạy lệnh Run-TechNews.ps1 ở mục 3 với đúng Server vừa kết nối.
 Không chạy Database.sql cũ hoặc các Upgrade/Seed khác sau khi đã cài TechNews.Full.sql.
 
 5. TÙY CHỌN KHÔI PHỤC FILE .BAK
 Chỉ chọn MỘT cách: cài file SQL hoặc restore .bak, không cần làm cả hai.
 File .bak được tạo bằng SQL Server 2022, dùng SQL Server 2022 hoặc mới hơn để restore.
-- Chép database/TechNewsDemo.bak vào thư mục Backup của SQL Server trên máy nhận (để dịch vụ SQL có quyền đọc).
+- Chép database/TechNews.bak vào thư mục Backup của SQL Server trên máy nhận (để dịch vụ SQL có quyền đọc).
 - Trong SSMS: Databases > Restore Database > Device > chọn file .bak.
-- Đặt Destination Database = TechNewsDemo (hoặc một tên mới chưa tồn tại).
+- Đặt Destination Database = TechNews (hoặc một tên mới chưa tồn tại).
 - Ở Files, chọn Relocate all files to folder và chọn thư mục Data/Log hợp lệ trên máy nhận. Không giữ đường dẫn dữ liệu từ máy tác giả. Tên logical file trong backup có tiền tố TechNews_Verification_Handoff; đây chỉ là tên file logic, không phải tên database bắt buộc.
 - Không chọn ghi đè database có sẵn. Nhấn OK để restore.
 - Chạy Run-TechNews.ps1 với đúng tên database vừa restore.

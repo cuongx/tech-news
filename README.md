@@ -31,9 +31,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-TechNews.ps1
 Mở http://localhost:5199. Tài khoản demo: **admin / 12345** và **customer / 12345**.
 Nếu dùng SQL Express, thêm `-Server ".\SQLEXPRESS"` vào cả hai lệnh.
 
-[database/TechNews.Full.sql](database/TechNews.Full.sql) chứa toàn bộ schema và dữ liệu demo: 14 bảng, 17 bài viết, 6 sản phẩm và hai tài khoản mẫu. Ảnh sản phẩm nằm trong source. Có thể restore [database/TechNewsDemo.bak](database/TechNewsDemo.bak) thay cho chạy SQL; xem hướng dẫn để chọn đường dẫn file khi restore.
+[database/TechNews.Full.sql](database/TechNews.Full.sql) chứa toàn bộ schema và dữ liệu demo: 14 bảng, 17 bài viết, 6 sản phẩm và hai tài khoản mẫu. Ảnh sản phẩm nằm trong source. Có thể restore [database/TechNews.bak](database/TechNews.bak) thay cho chạy SQL; xem hướng dẫn để chọn đường dẫn file khi restore.
 
-Bộ cài tạo database **TechNewsDemo** và dừng nếu tên đã tồn tại. Không chứa tài khoản cá nhân hay đơn hàng thật. Không chạy thêm các Upgrade/Seed rời sau khi cài bộ đầy đủ. Các mục cập nhật phía dưới là lịch sử nâng cấp dành cho database cũ.
+Bộ cài tạo database **TechNews** và dừng nếu tên đã tồn tại. Không chứa tài khoản cá nhân hay đơn hàng thật. Không chạy thêm các Upgrade/Seed rời sau khi cài bộ đầy đủ. Các mục cập nhật phía dưới là lịch sử nâng cấp dành cho database cũ.
 
 ## Cấu trúc
 
