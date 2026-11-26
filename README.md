@@ -19,73 +19,21 @@ sử dụng thương hiệu và tài nguyên giao diện TechNews.
 - Bootstrap, jQuery, Summernote.
 - PagedList / PagedList.Mvc.
 
-## Chạy trên máy
+## Chạy trên máy mới — database đầy đủ
 
-Yêu cầu .NET 8 SDK (hoặc SDK mới hơn hỗ trợ target .NET 8), SQL Server
-và SSMS hoặc `sqlcmd`.
-
-```powershell
-git clone https://github.com/cuongx/tech-news.git
-cd tech-news
-dotnet restore TechNews.sln
-dotnet build TechNews.sln --no-restore
-```
-
-### Database
-
-Nếu máy đã có BLOGDB của project, giữ database đó và bỏ qua bước tạo schema.
-Với database mới:
+Xem [hướng dẫn bàn giao](HUONG_DAN_CHAY_MAY_KHAC.txt). Cài .NET 8 SDK, SQL Server 2022 và sqlcmd, rồi chạy tại thư mục source:
 
 ```powershell
-sqlcmd -S localhost -E -C -b -f 65001 -i Database.sql
+powershell -NoProfile -ExecutionPolicy Bypass -File .\database\Install-Database.ps1
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Run-TechNews.ps1
 ```
 
-`Database.sql` tạo schema và 5 chuyên mục, không chứa tài khoản hay dữ liệu
-cá nhân. Script dừng nếu các bảng ứng dụng đã tồn tại, không xóa dữ liệu.
+Mở http://localhost:5199. Tài khoản demo: **admin / 12345** và **customer / 12345**.
+Nếu dùng SQL Express, thêm `-Server ".\SQLEXPRESS"` vào cả hai lệnh.
 
-Tạo tài khoản quản trị dành riêng cho máy phát triển trong SSMS. Thay các
-giá trị bên dưới trước khi chạy; không commit mật khẩu thật:
+[database/TechNews.Full.sql](database/TechNews.Full.sql) chứa toàn bộ schema và dữ liệu demo: 14 bảng, 17 bài viết, 6 sản phẩm và hai tài khoản mẫu. Ảnh sản phẩm nằm trong source. Có thể restore [database/TechNewsDemo.bak](database/TechNewsDemo.bak) thay cho chạy SQL; xem hướng dẫn để chọn đường dẫn file khi restore.
 
-```sql
-USE BLOGDB;
-INSERT dbo.[user](user_name,user_email,user_login,user_password,user_role)
-VALUES (N'Tên của bạn',N'email@example.com',N'ten_dang_nhap',
-        N'MAT_KHAU_RIENG_CHO_MAY_PHAT_TRIEN',N'Admin');
-```
-
-Sau khi có tài khoản, có thể thêm dữ liệu mẫu:
-
-```powershell
-sqlcmd -S localhost -E -C -d BLOGDB -b -f 65001 -i SeedTechnology.sql
-sqlcmd -S localhost -E -C -d BLOGDB -b -f 65001 -i ImportZnewsBriefs.sql
-```
-
-`SeedTechnology.sql` chứa bài kiến thức mẫu do TechNews biên soạn.
-`ImportZnewsBriefs.sql` chứa 5 bản tóm tắt được chuẩn bị ngày 21/10/2026,
-giữ ngày đăng nguồn, kèm liên kết bài gốc và dùng ảnh minh họa TechNews.
-Script bỏ qua bài đã nhập; không phải công cụ tự động lấy tin mới.
-
-`UpdateTechnologyCategories.sql` là script hỗ trợ database cũ chưa có
-các cột hiển thị và thứ tự chuyên mục; schema mới đã có các cột này.
-
-### Kết nối và khởi động
-
-Kết nối mặc định dùng Windows Authentication với `localhost`, database
-`BLOGDB`. Để đổi SQL Server mà không sửa hoặc commit cấu hình riêng:
-
-```powershell
-$env:ConnectionStrings__BlogDatabase = 'Server=TEN_SQL_SERVER;Database=BLOGDB;Trusted_Connection=True;TrustServerCertificate=True;'
-dotnet run --project TechNews --no-launch-profile --urls http://localhost:5199
-```
-
-- Website: `http://localhost:5199`
-- Đăng nhập: `http://localhost:5199/Admin/Login`
-- Bài viết: `/Admin/Articles`
-- Chuyên mục: `/Admin/Categories`
-- Tin nổi bật: `/Admin/BreakingNews`
-
-Có thể mở `TechNews.sln` trong Visual Studio và chạy project `TechNews`.
-Tài khoản trên máy phát triển hiện có không được đưa vào repository.
+Bộ cài tạo database **TechNewsDemo** và dừng nếu tên đã tồn tại. Không chứa tài khoản cá nhân hay đơn hàng thật. Không chạy thêm các Upgrade/Seed rời sau khi cài bộ đầy đủ. Các mục cập nhật phía dưới là lịch sử nâng cấp dành cho database cũ.
 
 ## Cấu trúc
 
@@ -110,7 +58,7 @@ các thư viện chưa được nâng cấp trong lần chuẩn bị repository 
 
 Giữ các thông báo bản quyền và license của thư viện trong `wwwroot/vendor`
 và `wwwroot/lib`. Không đưa bản sao database thật, khóa riêng, cấu hình máy,
-thư mục `bin`, `obj`, `.vs`, bản backup hoặc bản chạy thử vào Git.
+thư mục `bin`, `obj`, `.vs`, bản backup dữ liệu thật hoặc bản chạy thử vào Git. Bản backup demo sạch trong database/ là bộ bàn giao công khai.
 
 ## Cập nhật chức năng ngày 25/10/2026
 
